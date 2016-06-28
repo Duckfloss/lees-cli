@@ -8,27 +8,27 @@ module LeesCLI
 
     desc "csv", "??"
     def csv
-      puts "csv"
+      __method__.to_s
     end
 
     desc "images", "???"
     def images
-      puts "images"
+      __method__.to_s
     end
 
     desc "ecimap", "????"
     def ecimap
-      puts "ecimap"
+      __method__.to_s
     end
 
     desc "markdown", "?????"
     def markdown
-      puts "markdown"
+      __method__.to_s
     end
 
     desc "database", "This doesn't do anything yet"
     def database
-      puts "database"
+      __method__.to_s
     end
 
     shortcuts = tasks.keys.abbrev

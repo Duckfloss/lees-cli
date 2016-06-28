@@ -1,6 +1,9 @@
 # encoding: UTF-8
-require 'rubygems'
 require 'rake'
 require 'pry'
-require "bundler/gem_tasks"
 
+task :test do
+  require './test/cli_test'
+end
+
+task :default => :test
