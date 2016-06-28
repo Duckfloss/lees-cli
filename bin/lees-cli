@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../../lib/lees_cli',__FILE__)
+
+LeesCLI::Cli.start(ARGV.dup)
