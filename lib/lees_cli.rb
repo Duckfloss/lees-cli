@@ -31,11 +31,12 @@ module LeesCLI
       __method__.to_s
     end
 
-    shortcuts = tasks.keys.abbrev
-    shortcuts.merge!({"md"=>"markdown","db"=>"database"})
-    shortcuts.each do |shortcut, command|
+    tasks.keys.abbrev.each do |shortcut, command|
       map shortcut => command.to_sym
     end
+
+    map "md" => "markdown".to_sym
+    map "db" => "database".to_sym
 
     private
 
