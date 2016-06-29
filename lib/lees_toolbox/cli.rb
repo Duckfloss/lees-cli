@@ -31,6 +31,12 @@ module LeesToolbox
       __method__.to_s
     end
 
+    desc "-v", "Run in chatty mode"
+    option :verbose, :type => :boolean
+    def _v
+      __method__.to_s
+    end
+
     tasks.keys.abbrev.each do |shortcut, command|
       map shortcut => command.to_sym
     end
