@@ -2,7 +2,7 @@ require 'thor'
 require 'abbrev'
 require 'yaml'
 
-module LeesCLI
+module LeesToolbox
   class CLI < Thor
     include Thor::Actions
 

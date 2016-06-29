@@ -1,4 +1,4 @@
-module LeesCLI
+module LeesToolbox
 
   VERSION = '0.1.0'
 
