@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'pry'
-require './lib/lees_cli.rb'
+require './lib/lees_toolbox.rb'
 require 'minitest/autorun'
 
 class CliTest < MiniTest::Test
@@ -15,7 +15,7 @@ class CliTest < MiniTest::Test
 
   def test_simple
     @args.each do |arg|
-      assert_kind_of String, LeesCLI::CLI.start(arg)
+      assert_kind_of String, LeesToolbox::CLI.start(arg)
     end
   end
 end
