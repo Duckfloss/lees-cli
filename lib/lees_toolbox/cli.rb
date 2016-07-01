@@ -14,7 +14,9 @@ module LeesToolbox
       @source = check_csv(source)
       @params = get_csv_params(params)
       @params[:source] = @source
-
+      
+      $log = startlog
+binding.pry
       require 'tools/csv'
       LeesToolbox::CSV.new(@params)
     end
@@ -111,6 +113,20 @@ module LeesToolbox
       file
     end
 
+    def startlog
+      if options[:v]
+        log = Logger.new(STDOUT)
+        log.formatter = proc do |severity, time, progname, msg|
+          "#{msg}\n"
+        end
+      else
+        log = Logger.new("#{ENV['HOME']}/lees-toolbox-log.txt")
+        log.formatter = proc do |severity, time, progname, msg|
+          "#{time} - #{msg}\n"
+        end
+      end
+      log
+    end
   end
 
 end
