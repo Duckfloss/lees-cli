@@ -16,7 +16,7 @@ module LeesToolbox
       @params[:source] = @source
       
       $log = startlog
-binding.pry
+
       require 'tools/csv'
       LeesToolbox::CSV.new(@params)
     end
@@ -114,13 +114,29 @@ binding.pry
     end
 
     def startlog
+      # If verbose is on, output messages to terminal
       if options[:v]
         log = Logger.new(STDOUT)
         log.formatter = proc do |severity, time, progname, msg|
           "#{msg}\n"
         end
+      # Otherwise output messages to a log file
       else
-        log = Logger.new("#{ENV['HOME']}/lees-toolbox-log.txt")
+        # Check for log directory in HOME
+        Dir.mkdir("#{ENV['HOME']}/log") unless Dir.exist?("#{ENV['HOME']}/log")
+        # Check for leestoolbox log file
+        if File.exist?("#{ENV['HOME']}/log/leestoolbox-log.txt")
+          # Check file size, rotate if over 50k
+          if File.size("#{ENV['HOME']}/log/leestoolbox-log.txt") > 49999
+            require 'fileutils'
+            i = 1
+            while File.exist? "#{ENV['HOME']}/log/leestoolbox-log#{i}.txt"
+              i += 1
+            end
+            FileUtils.mv("#{ENV['HOME']}/log/leestoolbox-log.txt","#{ENV['HOME']}/log/leestoolbox-log#{i}.txt")
+          end
+        end
+        log = Logger.new("#{ENV['HOME']}/log/leestoolbox-log.txt")
         log.formatter = proc do |severity, time, progname, msg|
           "#{time} - #{msg}\n"
         end
