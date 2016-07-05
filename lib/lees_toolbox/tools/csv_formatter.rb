@@ -1,4 +1,5 @@
 require 'csv'
+require 'yaml'
 require 'tools/csv_formatter/shopifile'
 require 'tools/csv_formatter/map/mapper'
 
