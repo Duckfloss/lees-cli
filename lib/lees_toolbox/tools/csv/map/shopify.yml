@@ -1,0 +1,38 @@
+uniteu_products:
+  pf_id: pf_id
+  handle: name
+  title: name
+  body: description
+  option1_name: attr_label1
+  option2_name: attr_label2
+
+uniteu_variants:
+  pf_id: pf_id
+  option1_value: attr_value1
+  option2_value: attr_value2
+  variant_sku: sku
+  variant_inventory qty: inventory_level
+  variant_price: price_level1
+
+headers:
+  pf_id
+  handle
+  title
+  body
+  vendor
+  type
+  tags
+  published
+  option1_name
+  option1_value
+  option2_name
+  option2_value
+  option3_name
+  option3_value
+  variant_sku
+  variant_inventory_tracker
+  variant_inventory_qty
+  variant_price
+  variant_barcode
+  image_src
+  image_alt_text

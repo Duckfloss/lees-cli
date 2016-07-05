@@ -1,0 +1,748 @@
+vendors:
+  180: 180S
+  32N: 32North
+  3PY: 3 Play
+  616: Six Won Six
+  686: Westlife Distribution
+  888: Triple Eight Products
+  A&H: A & H Enterprises
+  A&L: Adam & Luke Schrab
+  A16: Adventure 16
+  ABK: Alpenbooks
+  ABL: Abunddalite
+  ABR: Hachette Book Group
+  ACO: Acorn Products
+  ACP: Acopa
+  ACR: Acr
+  ACT: Active Helmets
+  ADI: Adidas
+  ADJ: Adjng Inventory
+  ADK: Adam Kuehl Vids
+  ADV: Adventure Publications
+  AFD: Access Fund
+  AKI: Akimbo
+  ALL: All Kinds-A-Designs
+  ALN: Allett
+  ALO: Aloe Up
+  ALP: Alps Sportswear
+  AMG: Ann Arbor Media Group
+  AMP: Ace Metal Products
+  AMR: American Red Cross
+  ANC: Ancient Graffiti
+  AND: Anderson Co.
+  ANO: Anon Goggles
+  ANU: Ahnu
+  APA: Alpine Aire
+  APC: Alpaca Imports
+  APN: Alpine Tools, Inc.
+  APP: Apple Rise Sports
+  APS: Alpina Sports Corp.
+  AQB: Aquabound
+  AQL: Aqualearn
+  AQS: Aqua Sling
+  ARB: Arbor
+  ARC: Arc'teryx
+  ARM: Armada
+  ARN: Arnette Optic Illusions
+  ARS: Arbor
+  ART: Art Game
+  ASC: Picnic At Ascot
+  ASO: Asolo USA
+  AST: Astral Designs
+  AT : Adventure Technology
+  ATC: Appalachian Trail Conserv
+  ATH: Athalon Sportgear
+  ATL: Atlas
+  ATO: Atomic
+  AUC: Auclair
+  AUS: Austin House
+  AVE: Aventura
+  AVR: Avery Color Studios
+  AWH: Awh
+  B&P: Bill & Pauls
+  BAA: Baabaazuzu
+  BAB: Break Away Bikes
+  BAD: W.S. Badger Company
+  BAG: Big Agnes
+  BAL: Balance Designs
+  BAR: Barn House Puzzles
+  BAT: Bates Accessories
+  BB : Banshee Bungee
+  BBC: Bamboo Bottle Co.
+  BBD: Boulder Based Designs
+  BCM: Benchmade
+  BCW: Bell Canoe Works
+  BDY: Body Glide
+  BDZ: B.Dazzle, Inc.
+  BEA: Be As You Are
+  BEL: Bell Sports
+  BEM: B. E. Meyers
+  BEN: Bending Branches
+  BET: Betty Rides
+  BGD: Bridgedale USA
+  BGO: Baggo
+  BIS: Bison Belts
+  BKB: Blackbear/Calvert Mfg Co
+  BKP: Backpackers Pantry
+  BKS: Brooks Wetsuits
+  BLB: Blongo Ball
+  BLD: The Chemart Co.
+  BLK: Black Diamond
+  BLU: Bluewater Ropes
+  BNJ: Benjamin International
+  BOB: Bobbo Inc
+  BOE: Boeri USA
+  BOG: Bogs
+  BRA: Brabo
+  BRB: Brad Bruce
+  BRC: Barrecrafters
+  BRH: Bearhands
+  BRK: Brad Bruce
+  BRN: Bern
+  BRO: Broner
+  BRP: Burpco
+  BRU: Brunton
+  BRW: Boardworks
+  BRZ: Brz/Springfield Intrnt St
+  BSA: Boy Scouts of America
+  BSK: Beautiful Skier
+  BSL: BSA-SW Michigan Scout Shop
+  BTG: Boot Glove
+  BTH: Bethlehem Lights
+  BU+: [Bula,Sheridan]
+  BUC: Buck Knives
+  BUL: Bula
+  BUR: Burton
+  BYR: Byer Of Maine
+  BZB: Betsie Bay Kayaks
+  C&M: C&M Inovations
+  C4:  Boardworks
+  CAM: Camelbak
+  CAR: Susan Carli Scarves
+  CAS: [Cascade Designs, MSR, Therm-a-Rest, Platypus, SealLine, eCase, PackTowl]
+  CCC: County Clothing Co.
+  CCR: Cascade Creek
+  CDK: Current Designs
+  CEP: Compression Sportswear
+  CER: Cerax
+  CGP: CG Publishing
+  CHC: Chaco
+  CHI: Chisco
+  CHK: Chinook
+  CHN: Channal
+  CHO: Chota Outdoor Gear
+  CHR: Chronicle Books
+  CHU: Chums
+  CKC: Corwin Knife Company
+  CKL: Cackle TV
+  CLF: Clif Bar
+  CLG: Camping Logic
+  CLH: Climb High
+  CLI: Climbing Magazine
+  CLU: Clucky & Co
+  CLV: Cloudveil
+  CMG: CMG
+  CMN: Crescent Moon
+  CNC: Cant Company
+  CNF: Classy Nail Files
+  CNO: Retailvision
+  CO~: Co~signs
+  COA: Coastlines Fashion
+  COL: Columbia
+  CON: [Confluence, Adventure Technology, Boardworks, Dagger, Harmony, Mad River Canoe, Perception, Wilderness Systems]
+  COR: Corso Venezia
+  COT: Cotton Reel
+  COW: Cowboy Collectibles
+  CPT: Capital Garment
+  CRC: Crocs
+  CRE: Crescent
+  CRI: Crispi Sport
+  CRL: Casa Relief International
+  CRO: Croakies
+  CRZ: Crazy Creek Products
+  CSA: California Sports Access
+  CTG: C-Tug
+  CWC: Creative Whack Co.
+  CWX: CW-X
+  DA.: Da Kine Hawaii
+  DAG: Dagger
+  DAK: Dakini
+  DAL: Dale Of Norway
+  DBS: D B Sport
+  DCT: Descente
+  DDC: Dadeco
+  DEE: Deering Management
+  DEL: De Lorme Map Co
+  DEM: Demon
+  DES: Descente
+  DFR: Jim Dufresne
+  DGM: Disc Golf Michigan
+  DIS: Discraft Products
+  DLB: Dalbello
+  DMG: Dry My Gloves
+  DMT: DMT
+  DOG: It's A Dog's Life
+  DOL: [Dolfin, Jade]
+  DOR: Dorfman
+  DPC: Dave Page Cobbler
+  DSG: Disegna
+  DSH: Dan Sheridan
+  DSS: Design Salt
+  DTR: Deuter
+  DTV: Darn Tough
+  DWN: Dawn Marketing
+  DYN: Skis Dynastar
+  EAG: Eagle Creek
+  EAR: Ear Band-It
+  EBA: EBay
+  ECO: Echoes
+  EDY: Eddyline
+  EGL: Eagle Marketing
+  EGN: Eglands Wildflowers
+  EK : Ek Ekcessories
+  ELB: Elan Blanc
+  ELL: Ellington Rucksack Co
+  ELN: Elan
+  EMO: Emotion Kayaks
+  EMP: Empire Distribution
+  EMS: Emsco Group
+  ENE: Enertia Trail Foods
+  ENG: [England,Fifty-50]
+  ERG: Erg
+  ERM: Sg Marketing
+  ERS: E&R Sales
+  ESM: Earth Sun Moon Trading Co
+  ESN: Essential Gear
+  ESP: Emsco Group
+  EXO: ExOfficio
+  EZ : E-Z Sales
+  EZT: Ez Towel
+  F&M: F&M Hat Company
+  FAU: Freestyle Audio
+  FIF: Fifty 50
+  FIS: Fischer
+  FIV: Five Ten
+  FLF: Feel Free
+  FLG: Flylow Gear
+  FLL: Flylow
+  FLT: Full Tilt
+  FLW: Flow
+  FLY: Flyshacker
+  FOF: Fifty0neFifty
+  FOL: Folkmanis
+  FOU: Foursquare
+  FRA: Franklin
+  FRE: Freestyle
+  FRF: 4Frnt Skis
+  FRS: Freeskier Magazine
+  FRY: R & L Frye
+  FSK: Fiskers Outdoor
+  FSP: Fisher Space Pen Company
+  FST: Fastech Labs
+  FUN: Fun Spot Promotions
+  FUT: Future Products
+  FVR: Fever
+  G3 : Genuine Guide Gear
+  GAI: Gaiam International
+  GAR: Garmin
+  GCI: GCI Outdoor
+  GD4: Good 4 The Soul
+  GDC: A Guy & His Dog
+  GDT: Grand Trunk
+  GEM: Gemini Fashions of Canada
+  GIB: Gibbon Slacklines
+  GIR: Giro
+  GLP: Great Lakes Proud
+  GMI: Gemini Kaleidoscopes
+  GMT: Garmont
+  GND: Grand Shelters
+  GNG: Granite Gear
+  GNU: Gnu
+  GOA: Goal Zero
+  GOL: Golite Footwwear
+  GOO: Goode Poles
+  GOP: GoPro
+  GOT: Grip-On-Tools
+  GRA: Grangers
+  GRB: Grabber
+  GRD: Ground
+  GRE: Great Quotations
+  GRG: Gregory Mountain Products
+  GRL: Great Lakes Promotions
+  GRP: Grip Master
+  GRS: Grassroots Goods
+  GSI: GSI
+  HAM: Hammond's Candies
+  HAN: Hansen Publishing Co
+  HAZ: Hazy Creations
+  HER: Sample Shoes-Salomon
+  HET: Head Tyrolia Wintersports
+  HGR: High Gear
+  HIB: Hat In a Bag
+  HIG: Highland Trading
+  HIS: High Sierra
+  HKU: Haiku
+  HLD: Holden
+  HLE: Helle Knives
+  HLH: Vazi-Helmet Headz
+  HLI: Heliconia Press
+  HLY: Helly Hansen
+  HMH: [Hammerhead, CherryMax]
+  HNS: Honey Stinger
+  HOB: Hobie Cat
+  HOC: Hot Chillys
+  HOG: Hog Wild
+  HOM: House of Marbles
+  HOR: Toad & Co.
+  HOT: Hotronic
+  HRI: Housing Resources, Inc.
+  HRN: Harken
+  HRT: Keren Hart Ltd
+  HSY: Todd Hershey
+  HTC: Hi-Tec
+  HTL: Hotline Watch Service
+  HUC: NSM-Huckdoll
+  HYD: Hydro-Photon, Inc.
+  HYP: Hyper Corp
+  HYS: William Hays
+  IBE: Ibex
+  ICE: Icelandic Design
+  ICL: Icelantic
+  ICT: Ice Trekkers
+  IMC: Speedimpex Direct
+  IMP: Impex
+  IMR: Immersion Research
+  IND: Indian Prairie Alpacas
+  INF: Infinity Sports Imports
+  INN: Innova
+  INO: Innova
+  IRO: Iron Gloves
+  ITL: Interco
+  ITW: In The Woods
+  IVR: Iverson
+  JAN: Jansport
+  JAT: Jati
+  JBN: John Bronson
+  JEL: Jelly Belly Candy
+  JES: J.E. Sherry Company
+  JET: Jetboil
+  JJJ: Judith Jansen Jewelry
+  JKS: JK Sales
+  JLD: J.L. Darling Corp
+  JNO: [Johnson Outdoors, Lendal]
+  JOS: Joshua Tree Products
+  JOY: Joy Sports
+  JUN: Juniper Ridge
+  JVA: Java Juice
+  K2:  K2
+  KAR: Karhu
+  KAT: Katadyn
+  KAV: Kavu
+  KEL: Kelty
+  KEN: Keen
+  KEW: Keweenaw Gem & Gift
+  KHJ: Kevin H. Johnson
+  KIK: Kikkerland Design, Inc.
+  KIL: Killer Beads
+  KIS: Kiss My Face
+  KKL: Krimson Klover
+  KLY: Klymit
+  KLZ: Klutz
+  KNC: Kalamazoo Nature Center
+  KNE: KneeBinding
+  KNG: Kangoo Jump Shoes
+  KO+: Kombi-Sheridan
+  KOK: Kokatat
+  KOM: Kombi
+  KRF: Kate's Real Food
+  KRZ: Kurz Glass Jewelry
+  KTA: Kakadu Traders Australia
+  KUH: Kühl
+  KUP: Kupilka
+  KZO: Kalamazoo Sportswear
+  L1P: Level 1 Productions
+  LAB: Labor
+  LAD: L.A. Blend
+  LBT: Lib Tech
+  LBU: Lucky Bums
+  LEE: Lee's Adventure Sports
+  LEG: Legacy Paddlesports
+  LEK: Leki
+  LGT: Liberty Graphics Tshirts
+  LIB: Liberty Mt Sports
+  LIG: Life Is Good
+  LKA: Lake Art
+  LLM: LiveLoveMI
+  LMN: Leatherman
+  LND: Laundromat
+  LNE: Line
+  LOG: Log House Designs
+  LOL: Lolë
+  LOW: Lowe Alpine Systems
+  LQD: Liquid Boardwear
+  LTS: Lotus Designs
+  LUM: Lumatec Industries
+  LVL: Level USA
+  LWA: Lowa Boots
+  LWK: Lone Wolf Knives
+  MAL: Malone of Maine
+  MAN: Manzella Productions
+  MAR: Marmot
+  MAX: [Maxim, New England Ropes]
+  MBY: Mountain Boy
+  MCG: McGuire, Gail Borgman
+  MCH: Michigan Mittens
+  MDB: Mad Bomber
+  MDR: Mad River Canoe
+  MEN: Mental By Do Rags, Inc.
+  MER: Merrell
+  MFT: Master Fit Entp
+  MHR: Marhar
+  MHW: Mountain Hardwear
+  MIL: Miller Thermometer
+  MIN: Ministry with Community
+  MIS: Mission Imports
+  MIT: Mitchell Paddles
+  MJF: Mary Jane's Farm
+  MKL: Marker
+  MKU: Marker
+  MLB: Malibu Skateboards
+  MLR: Miller Sales
+  MNE: Montane
+  MNK: Mountain Khakis
+  MNS: Mountain Smith
+  MNT: Montanaco
+  MOD: Modern Skate and Surf
+  MOH: Mohawk Paddles Mile
+  MOM: Momsguide Media, Inc.
+  MON: Montrail
+  MPD: Mpowerd
+  MPI: MPI Outdoors
+  MRO: Monroe Art Studio
+  MRW: Morrow Snowboards
+  MSC: Misc
+  MSF: Mountain Surf
+  MSR: MSR
+  MTH: Mountain House
+  MTI: [MTI, Palm]
+  MTM: Mich Trail Maps
+  MTR: Mitroll Company
+  MUT: Mutts It To Ya
+  MWO: Manual Woodworkers
+  MWW: Manual Woodworker & Weaver
+  MYS: Mystik Toyz
+  NAG: North American Gear
+  NAI: Pacific Boardworks
+  NAT: Native
+  NAV: Navarro Canoe
+  NCO: Neo Corp
+  NCT: North Country Trail Association
+  NEM: Nemo
+  NEO: NEOS
+  NES: Nester Hosiery, Inc.
+  NEV: Neve Designs
+  NGA: National Geographic
+  NIG: Nightengale And Associate
+  NIK: Nikon
+  NIL: Nils Skiwear, Inc.
+  NIS: Thermos
+  NIT: Nitro
+  NIX: Nikwax
+  NKA: Nikita
+  NKE: Nike
+  NOB: Nobis
+  NOL: Northern Lights
+  NOM: Nomadic Traders
+  NOR: Nordica
+  NOS: Neo Sport
+  NRS: Northwest River Supplies
+  NSI: NSI
+  NTN: [NATHAN, Penguin]
+  NUA: NuageCapital Garmet
+  NUU: Nuun & Company
+  NWP: Northword Press, Inc.
+  NWR: North Water
+  NWT: NW Territorial Mint
+  NWV: Northwave
+  NXN: Nixon
+  OAK: Oakley
+  OBO: Oboz
+  OBR: Obermeyer
+  OCP: Otters Camp Pillows
+  ODC: Outdoor Cap Co
+  OJA: Ojai International
+  OLD: Old Guys Rule
+  OLM: Olovesm Eco Bags
+  OPC: Outpac
+  ORA: Orage
+  ORB: Original Blues Clothing
+  ORC: Outdoor Rx Co
+  ORI: [Orikaso, Axis Outdoor]
+  OSP: Osprey
+  OTP: Outpost Sports
+  OTS: Outside Magazine
+  OTT: OtterBox
+  OTW: Outerwear Repair
+  OUG: Outdoor Gear
+  OUP: Outdoor Products
+  OUR: Outdoor Research
+  OZO: [Ozone Kites, Windzup]
+  P&B: P&B Harness Shop
+  P&H: P&H
+  PAD: Paddleboy Carts
+  PAI: Produce Apparel Inc
+  PAR: Partners West Book Dist
+  PAT: Patagonia
+  PAU: Mark Paulsen
+  PBI: Pickleball Inc
+  PDR: Powder Mag
+  PEA: Peapack Mitten Company
+  PEN: Pendleton
+  PER: Perception
+  PLA: Plastech Industries Co
+  PLN: Planet Zoo
+  PLS: Pro-Lite Sports
+  PMS: Prime Memory Solutions
+  PMX: [Polarmax, Longworth]
+  POC: Poc
+  POL: Polar Electro Inc
+  POW: Powerfood
+  PRA: Prana
+  PRB: Probar LLC
+  PRD: Predator
+  PRK: Park Designs
+  PRL: Pearl Izumi
+  PRO: Product Architects Inc
+  PRP: Preeminent Projects
+  PRR: Purr-fection By MJC
+  PRS: Paris
+  PRT: Partners Book Distribution
+  PSC: Packaging Service Company
+  PSF: Primal Spirit Foods
+  PSO: Psolar.EX
+  PST: Pistil
+  PT6: Point 6
+  PTC: Princeton Tec
+  PTF: Patagonia
+  PTS: Port Supply
+  PTZ: Petzl
+  PUR: PureMichigan - Helm Inc
+  PUT: Putori
+  PUZ: Puzzles That Rock
+  PWG: Pow Gloves
+  PYR: Pyranha
+  PZL: Puzzled
+  QUA: Quayside Publishing Group
+  QUI: Quiksilver
+  QWR: Quiet World Recreation
+  R&I: Rock & Ice Magazine
+  RAF: Rafters
+  RAN: Random House
+  RAR: Riptides and Rapids
+  RAS: Rasta Imposta
+  RAT: Rat-Tail Distribution
+  RCK: Rock Our World
+  RCO: Re Chaco
+  RDI: Rainbow Distributing
+  RDL: Red Ledge
+  RED: Red Corp
+  REF: Reef
+  REL: Reliable Racing
+  RHR: Rita Hadro Rusco
+  RIP: Ripzone
+  RIS: Rising International
+  RKY: Rocky Mountain Resole
+  RLB: Rollerblade
+  RLK: Rope Lok
+  RLZ: [Railz, Sport Tech]
+  RNS: Rain and Snow Inc
+  ROC: Roces USA
+  ROD: Rodale Press
+  ROM: Rome Industries
+  ROS: Rossingnol
+  ROY: Royal Robbins
+  RTG: Radical Gear
+  RUB: Rubyjupe
+  RUD: Rudy Project
+  RUF: Ruffolo Enterprises, Inc.
+  RVS: Riverside Cartop Carriers
+  RWP: Revealed Water Products
+  RXY: Roxy
+  RYO: Roll Your Own
+  S&S: Sun & Snow Sports
+  SAA: Sports Accessories/America
+  SAF: Sunday Afternoons
+  SAL: Salomon
+  SAR: Saranac
+  SCC: Sweetwood Cattle Company
+  SCN: Sportsman's Connection
+  SCO: Scott
+  SCP: Scarpa
+  SCR: Screamer Hats
+  SDC: Schrader-Dane Corp
+  SEA: Seattle Sports
+  SEE: See Ya Sports
+  SEI: Seismic Wheels
+  SEN: [Tribe, Senate]
+  SEP: Sharp End Publishing
+  SFT: Swift
+  SFW: Spyder
+  SHE: Sherpani
+  SHR: Shred Alert
+  SIE: Sierra Designs
+  SIG: Sigg Water Bottles
+  SIL: Silverfoot
+  SK : Ski Magazine
+  SK8: Sk8trip
+  SKA: Skea Ltd
+  SKC: Skullcandy
+  SKI: Sking Magazine
+  SKO: Skoboatin' Enterprises
+  SKS: Skwoosh Kayak Pads
+  SKT: Ski Tote
+  SKW: Skiwalking
+  SLM: Salamander
+  SLS: Seals Sprayskirts
+  SLT: Silktrails
+  SMA: SmartWool
+  SMT: Summit Distribution
+  SNA: Snap Dragon Design
+  SND: Sunshine Distribution
+  SNO: Snoloha
+  SNP: Snow Peak
+  SNS: Snowstamps
+  SNW: Snow Angel
+  SOE: Souers
+  SOF: Soffe
+  SOG: Sog Specialty Knives
+  SOL: Sole
+  SON: Sonic Sports
+  SOR: Sorel
+  SOZ: Soze Group
+  SP : Scott Parr
+  SPA: Spacecraft
+  SPC: Spyderco
+  SPD: Speedo
+  SPE: Spenco Medical
+  SPG: Spy
+  SPH: Sporthill
+  SPO: Smith Sport Optics
+  SPR: Spirakut
+  SPT: Sportula
+  SPY: Spyder
+  SRZ: Surf-Rodz
+  SSL: Sports Specialists Ltd
+  SSP: Suspender Company
+  SSS: Sale Misc Venders
+  STA: State Theater
+  STE: [Steiner, Burris]
+  STN: Stearns
+  STO: Ski Tops
+  STP: Steripen
+  STQ: Stohlquist
+  STR: Stormy Kromer
+  STS: Stormy Seas
+  STW: Skating The Way
+  SUN: Sun Co
+  SUS: Salus Marine Wear
+  SUU: [Suunto,Optimus]
+  SV2: Seven Two
+  SVT: Sun Valley Ski Tool
+  SWI: Victorinox Swiss Army
+  SWN: Swany
+  SWV: Swivler
+  SWX: Swix
+  TAR: Hammock Source
+  TB2: Timbuk2
+  TBN: T-Bone Productions
+  TDK: Trendkillers
+  TEC: [Tecnica, Blizzard]
+  TER: Terramar Indust
+  TEV: Teva
+  TEZ: Teazer Inc
+  TGO: Trango
+  THL: Thule
+  THO: Thorlo
+  THT: ThirtyTwo
+  TIL: Tilley
+  TIM: Timex
+  TKO: Teko
+  TLP: The Lost Paddle
+  TNF: The North Face
+  TNT: Tent Repair Services
+  TOP: Top Cor LLC
+  TPK: Transpack
+  TRL: National Geographic Maps
+  TRR: Terra Studios Inc
+  TSU: Tsunami/Gemini
+  TSV: The Sweater Venture
+  TUB: Tubbs
+  TUC: Tucker-Jones House Inc
+  TUR: Turtlefur
+  TWS: Twist Knitwear
+  TYR: TYR
+  UA : Under Armour
+  ULU: Ulu
+  UMP: University of Michigan Press
+  USD: [U.S. Divers, Aqua Lung]
+  UTM: Ultima Health Products
+  UV : UV Distributors
+  UVX: [Uvex, Holmenkol]
+  VAN: Vans
+  VAU: Vaude Sports
+  VIB: Five Fingers
+  VID: Video Action Sports
+  VKL: Völkl
+  VOI: Voile' Equipment
+  VOL: Volcom
+  VOY: [Voyager, Mad River]
+  VOZ: Voz Sports
+  VSQ: [Vasque, Red Wing]
+  WAN: Wanderer Imports Co
+  WDR: Winding River Clothing
+  WDS: Woodstock Percussion
+  WER: Werner
+  WEZ: Walk-EZ
+  WFB: World Footbag
+  WGL: Water Girl
+  WGN: Wigens
+  WHL: Wildhills Adventures
+  WIE: Wiebke Trading Co
+  WIG: Wigwam Mills
+  WIN: Wenonah
+  WIS: Wisconsin Pharmacal Co
+  WLB: Wooly Bully Wear
+  WLK: Walk For The Homeless
+  WM : William Mark
+  WNC: Women Of Climbing
+  WNN: Wenonah
+  WNT: Wintersteiger
+  WOD: Woods Canada Limited
+  WOO: Woolrich
+  WOR: Workman Publishing
+  WOS: Woosah
+  WRG: Wrong Gear
+  WSD: Westdale Foods Co/chicago
+  WSH: Watershed
+  WSW: Watersports Warehouse
+  WTZ: Witz
+  WVS: Wave Sport
+  WWN: W.W. Norton
+  WYN: Wynit Corp
+  YAK: Yakima
+  YER: Sawyer Paddles & Oars
+  YGM: Yard Games & More
+  YKB: Yakrak Booties
+  YKP: Yakpads
+  YMX: Yellowman LLC
+  YOS: Yost Manufacturing
+  YPR: Yooper Campfire Grill
+  YTX: Yaktrax
+  ZAM: Sambah Naturals
+  ZCL: Zach Clark-lee
+  ZIM: Zimmer Enterprises
+  ZIP: Zipfy
+  ZOS: Zosma Publish
+  ZRE: Zaveral Racing Equipment
+  ZST: Zamst
+  
