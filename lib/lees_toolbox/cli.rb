@@ -56,7 +56,7 @@ module LeesToolbox
     private
     
     def get_csv_params(params)
-      newparams = {:target=>nil,:s=>nil,:d=>nil,:t=>nil}
+      newparams = Hash.new
 
       # Check for command-line parameters
       params.each do |param|
@@ -64,34 +64,34 @@ module LeesToolbox
           when /.csv$/
             newparams[:target] = param
           when "u", "r"
-            newparams[:s] = param
+            newparams[:source_type] = param
           when "p", "v"
-            newparams[:d] = param
+            newparams[:data_type] = param
           when "g", "d", "s"
-            newparams[:t] = param
+            newparams[:target_type] = param
         end
       end
   
       # Ensure source type is r or u
-      while !["r","u"].include? newparams[:s]
-        newparams[:s] = ask "Where did this data come from:(r)pro or (u)niteu?"
+      while !["r","u"].include? newparams[:source_type]
+        newparams[:source_type] = ask "Where did this data come from:(r)pro or (u)niteu?"
       end
 
       # Try to guess data type by searching file name
       ["product","variant"].each do |i|
         if File.basename(@source).include? i
-          newparams[:d] = i[0]
+          newparams[:data_type] = i[0]
         end
       end
 
       # Ensure data type is p or v
-      while !["p","v"].include? newparams[:d]
-        newparams[:d] = ask "What type of data is is: (p)roducts or (v)ariants?"
+      while !["p","v"].include? newparams[:data_type]
+        newparams[:data_type] = ask "What type of data is is: (p)roducts or (v)ariants?"
       end
 
       # Ensure output format is s, d, or g
-      while !["s","d","g"].include? newparams[:t]
-        newparams[:t] = ask "What are you converting it to? (s)hopify, (d)ynalog, or (g)oogle?"
+      while !["s","d","g"].include? newparams[:target_type]
+        newparams[:target_type] = ask "What are you converting it to? (s)hopify, (d)ynalog, or (g)oogle?"
       end
 
       return newparams
