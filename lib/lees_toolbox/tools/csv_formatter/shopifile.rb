@@ -4,7 +4,7 @@ class Shopifile
 
   def initialize(datarow, params)
     @data = datarow
-    @source = params[:source]
+    @source_type = params[:source_type]
     @data_type = params[:data_type]
     @map = params[:map]
     @product = {}
@@ -41,6 +41,6 @@ class Shopifile
   end
 
   def vendor_filter(data)
-    vendors = YAML.load(File.open("./lib/formatcsv/vendors.yml"))
+    vendors = YAML.load(File.open("./lib/lees_toolbox/tools/vendors.yml"))
   end
 end

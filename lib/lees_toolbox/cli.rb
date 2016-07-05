@@ -7,18 +7,18 @@ module LeesToolbox
 
     class_option :v, :type=>:boolean, desc: "Run in chatty mode"
 
-    # COMMAND: csv
+    # COMMAND: csv_formatter
     desc "csv [SOURCE]", "Convert a csv file from one format to another"
     option :target, :desc=>"Optional target file"
-    def csv(source, *params)
+    def csv_formatter(source, *params)
       @source = check_csv(source)
       @params = get_csv_params(params)
       @params[:source] = @source
       
       $log = startlog
 
-      require 'tools/csv'
-      LeesToolbox::CSV_Formatter.new(@params)
+      require 'tools/csv_formatter'
+      LeesToolbox.run(@params)
     end
 
     # COMMAND: images

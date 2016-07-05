@@ -1,14 +1,25 @@
 require 'csv'
-require 'tools/csv/shopifile'
-#require 'tools/csv/uniteu'
-require 'tools/csv/map/mapper'
+require 'tools/csv_formatter/shopifile'
+require 'tools/csv_formatter/map/mapper'
 
 module LeesToolbox
+
+  def self.run(params)
+    require 'tools/csv_formatter/uniteu'
+
+    if params[:source_type] == "uniteu"
+      $x = LeesToolbox::UniteU.new(params).parse
+    elsif params[:source_type] == "rpro"
+      $x = "RPro.new(params).parse"
+    end
+  end
+
   class CSV_Formatter
 
     attr_reader :source_file, :target_file, :verbose, :source, :data_type, :format, :products, :merge
 
     def initialize(params)
+
       @source_file = CSV.read(encode(params[:source]),:headers=>true,:header_converters=>:symbol)
 
       # Get target file
@@ -20,11 +31,7 @@ module LeesToolbox
       @source_type = params[:source_type]
       @data_type = params[:data_type]
       @target_type = params[:target_type]
-      @mapper = Mapper.new({:source=>@source_type, :data_type=>@data_type, :target_type=>@target_type})
-    end
-
-    def run
-    
+      @mapper = Mapper.new({:source_type=>@source_type, :data_type=>@data_type, :target_type=>@target_type})
     end
 
     def inspect
