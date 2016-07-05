@@ -20,8 +20,6 @@ Gem::Specification.new do |gem|
 
 	gem.files			= Dir["{lib}/**/*.rb", "bin/*", "test/*"]
 
-	gem.add_dependency("activemodel", ">= 4.2.2")
-	gem.add_dependency("activesupport", ">= 4.2.2")
 	gem.add_dependency("thor", "~> 0.18.1")
 	gem.add_dependency("pry", ">= 0.9.12.6")
 
