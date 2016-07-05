@@ -18,7 +18,7 @@ module LeesToolbox
       $log = startlog
 
       require 'tools/csv'
-      LeesToolbox::CSV.new(@params)
+      LeesToolbox::CSV_Formatter.new(@params)
     end
 
     # COMMAND: images
@@ -92,6 +92,19 @@ module LeesToolbox
       # Ensure output format is s, d, or g
       while !["s","d","g"].include? newparams[:target_type]
         newparams[:target_type] = ask "What are you converting it to? (s)hopify, (d)ynalog, or (g)oogle?"
+      end
+      
+      # Convert short params
+      newparams.each do |k,p|
+        case p
+          when "u" then newparams[k] = "uniteu"
+          when "r" then newparams[k] = "rpro"
+          when "p" then newparams[k] = "products"
+          when "v" then newparams[k] = "variants"
+          when "g" then newparams[k] = "google"
+          when "d" then newparams[k] = "dynalog"
+          when "s" then newparams[k] = "shopify"
+        end
       end
 
       return newparams
