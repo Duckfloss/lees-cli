@@ -11,10 +11,10 @@ module LeesToolbox
     desc "csv [SOURCE]", "Convert a csv file from one format to another"
     option :target, :desc=>"Optional target file"
     def csv(source, *params)
-      @source = check_csv(source)
+      @source = check_file(source, ext="csv")
       @params = get_csv_params(params)
       @params[:source] = @source
-      
+
       $log = startlog
       require 'tools/csv_formatter'
       LeesToolbox.run(@params)
@@ -142,22 +142,29 @@ module LeesToolbox
       return newparams
     end
 
-    def check_csv(file)
-      if !file.nil?
-        if File.extname(file) != ".csv"
-          say "#{file} is not a csv file"
-          exit -1
-        end
-        if !File.exist?(file)
-          if @source.nil?
-            say "#{file} does not exist."
+    # METHOD: Check file or dir to see if it exists and is the right format
+    def check_file(file, ext=nil, type="file")
+      if type == "file"
+        if !ext.nil?
+          if File.extname(file) != ".#{ext}"
+            say "#{file} should be formatted as #{ext}"
             exit -1
           end
+        end
+        if !File.exist?(file)
+          say "#{file} does not exist."
+          exit -1
+        end
+      else type == "dir"
+        if !Dir.exist?(file)
+          say "#{file} does not exist."
+          exit -1
         end
       end
       file
     end
 
+    #METHOD: Starts logging, outputs to stdout if verbose is true
     def startlog
       # If verbose is on, output messages to terminal
       if options[:v]
