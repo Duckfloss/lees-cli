@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
 
 	gem.add_dependency("thor", "~> 0.18.1")
 	gem.add_dependency("pry", ">= 0.9.12.6")
+	gem.add_dependency("rmagick", "~> 2.15.4")
 
 	dev_dependencies = [['mocha', '>= 0.9.8'],
 					  ['fakeweb'],
