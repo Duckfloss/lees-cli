@@ -5,26 +5,40 @@ module LeesToolbox
   class CLI < Thor
     include Thor::Actions
 
-    class_option :v, :type=>:boolean, desc: "Run in chatty mode"
+    class_option :verbose, :aliases=>"-v", :type=>:boolean, desc: "Run in chatty mode"
 
     # COMMAND: csv_formatter
     desc "csv [SOURCE]", "Convert a csv file from one format to another"
     option :target, :desc=>"Optional target file"
-    def csv_formatter(source, *params)
+    def csv(source, *params)
       @source = check_csv(source)
       @params = get_csv_params(params)
       @params[:source] = @source
       
       $log = startlog
-
       require 'tools/csv_formatter'
       LeesToolbox.run(@params)
     end
 
     # COMMAND: images
     desc "images", "Batch format images for Lee's website"
+    option :eci, :aliases=>"-e", :default=>true, :type=>:boolean,
+           :desc=>"Convert to eci image directory"
+    option :source, :aliases=>"-s", :type=>:string,
+           :desc=>"Image file or directory to convert from"
+    option :dest, :aliases=>"-d", :type=>:string,
+           :desc=>"Directory to output images to"
+    option :format, :aliases=>"-f", :type=>:array,
+           :desc=>"List of sizes to convert to"
     def images
-      __method__.to_s
+      @params = {}
+      @params[:format] = get_format(options[:format])
+      puts @params.to_s
+      puts options.to_s
+#      puts params.to_s
+#      $log = startlog
+#      require 'tools/images'
+#      LeesToolbox.run(@params)
     end
 
     # COMMAND: ecimap
@@ -54,7 +68,25 @@ module LeesToolbox
     map "db" => "database".to_sym
 
     private
-    
+
+    def get_format(formats)
+      if formats.nil?
+        return [:sm,:med,:lg]
+      else
+        format = []
+        formats.each do |k,v|
+          allowed_formats = ["thumb","small","medium","large","lg"].abbrev
+          if !allowed_formats[k].nil?
+            format << allowed_formats[k].to_sym
+          else
+            say "#{k} is not a valid image size. Please select th, sm, med, or lg"
+            exit -1
+          end
+        end
+        return format
+      end
+    end
+
     def get_csv_params(params)
       newparams = Hash.new
 
@@ -157,5 +189,4 @@ module LeesToolbox
       log
     end
   end
-
 end
