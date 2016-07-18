@@ -32,7 +32,7 @@ module LeesToolbox
            :default=>"R:/RETAIL/IMAGES/4Web"
     option :format, :aliases=>"-f", :type=>:array,
            :desc=>"List of sizes to convert to",
-           :default=>["t","med","lg"]
+           :default=>["sw","med","lg"]
     def images
       @params = {}
       @params[:format] = get_format(options[:format])
@@ -87,7 +87,7 @@ module LeesToolbox
     def get_format(formats)
       format = []
       formats.each do |k,v|
-        allowed_formats = ["thumb","small","medium","large"].abbrev
+        allowed_formats = ["thumb","swatch","medium","large"].abbrev
         allowed_formats["lg"] = "large"
         if !allowed_formats[k].nil?
           format << allowed_formats[k].to_sym
