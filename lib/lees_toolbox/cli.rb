@@ -47,8 +47,6 @@ module LeesToolbox
         @params[:dest] = check_file(options[:dest] ,nil, "dir")
       end
       @params[:eci] = options[:eci]
-#      puts @params.to_s
- #     puts options.to_s
 
       $log = startlog
       require 'tools/images'
@@ -178,11 +176,13 @@ module LeesToolbox
       file
     end
 
-    #METHOD: Starts logging, outputs to stdout if verbose is true
+    #METHOD: Starts logging, outputs to console if verbose is true
     def startlog
       # If verbose is on, output messages to terminal
-      if options[:v]
+      if options[:verbose]
+        require 'io/console'
         log = Logger.new(STDOUT)
+        log.level = Logger::INFO
         log.formatter = proc do |severity, time, progname, msg|
           "#{msg}\n"
         end
