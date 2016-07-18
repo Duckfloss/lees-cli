@@ -22,23 +22,37 @@ module LeesToolbox
 
     # COMMAND: images
     desc "images", "Batch format images for Lee's website"
-    option :eci, :aliases=>"-e", :default=>true, :type=>:boolean,
+    option :eci, :aliases=>"-e", :default=>false, :type=>:boolean,
            :desc=>"Convert to eci image directory"
     option :source, :aliases=>"-s", :type=>:string,
-           :desc=>"Image file or directory to convert from"
+           :desc=>"Source image or directory",
+           :default=>"C:/Documents and Settings/pos/My Documents/Downloads/WebAssets"
     option :dest, :aliases=>"-d", :type=>:string,
-           :desc=>"Directory to output images to"
+           :desc=>"Directory to output images to",
+           :default=>"R:/RETAIL/IMAGES/4Web"
     option :format, :aliases=>"-f", :type=>:array,
-           :desc=>"List of sizes to convert to"
+           :desc=>"List of sizes to convert to",
+           :default=>["t","med","lg"]
     def images
       @params = {}
       @params[:format] = get_format(options[:format])
-      puts @params.to_s
-      puts options.to_s
-#      puts params.to_s
-#      $log = startlog
-#      require 'tools/images'
-#      LeesToolbox.run(@params)
+      if !options[:source].nil?
+        if options[:source] =~ /\.[A-Za-z]{3,4}$/
+          @params[:source] = check_file(options[:source], nil, "file")
+        else
+          @params[:source] = check_file(options[:source] ,nil, "dir")
+        end
+      end
+      if !options[:dest].nil?
+        @params[:dest] = check_file(options[:dest] ,nil, "dir")
+      end
+      @params[:eci] = options[:eci]
+#      puts @params.to_s
+ #     puts options.to_s
+
+      $log = startlog
+      require 'tools/images'
+      LeesToolbox.run(@params)
     end
 
     # COMMAND: ecimap
@@ -60,31 +74,29 @@ module LeesToolbox
       exit 0
     end
 
+    # Shortcuts
     tasks.keys.abbrev.each do |shortcut, command|
       map shortcut => command.to_sym
     end
-
     map "md" => "markdown".to_sym
     map "db" => "database".to_sym
 
     private
 
+    # METHOD: Ensure submitted formats are allowed
     def get_format(formats)
-      if formats.nil?
-        return [:sm,:med,:lg]
-      else
-        format = []
-        formats.each do |k,v|
-          allowed_formats = ["thumb","small","medium","large","lg"].abbrev
-          if !allowed_formats[k].nil?
-            format << allowed_formats[k].to_sym
-          else
-            say "#{k} is not a valid image size. Please select th, sm, med, or lg"
-            exit -1
-          end
+      format = []
+      formats.each do |k,v|
+        allowed_formats = ["thumb","small","medium","large"].abbrev
+        allowed_formats["lg"] = "large"
+        if !allowed_formats[k].nil?
+          format << allowed_formats[k].to_sym
+        else
+          say "#{k} is not a valid image size. Please select th, sm, med, or lg"
+          exit -1
         end
-        return format
       end
+      return format
     end
 
     def get_csv_params(params)
@@ -143,6 +155,8 @@ module LeesToolbox
     end
 
     # METHOD: Check file or dir to see if it exists and is the right format
+    # Exit on failure
+    # Return file or dir name on success
     def check_file(file, ext=nil, type="file")
       if type == "file"
         if !ext.nil?
@@ -152,12 +166,12 @@ module LeesToolbox
           end
         end
         if !File.exist?(file)
-          say "#{file} does not exist."
+          say "The file named \"#{file}\" does not exist."
           exit -1
         end
       else type == "dir"
         if !Dir.exist?(file)
-          say "#{file} does not exist."
+          say "The file named \"#{file}\" does not exist."
           exit -1
         end
       end
