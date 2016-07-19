@@ -188,21 +188,9 @@ module LeesToolbox
         end
       # Otherwise output messages to a log file
       else
-        # Check for log directory in HOME
+      # Check for log directory in HOME
         Dir.mkdir("#{ENV['HOME']}/log") unless Dir.exist?("#{ENV['HOME']}/log")
-        # Check for leestoolbox log file
-        if File.exist?("#{ENV['HOME']}/log/leestoolbox-log.txt")
-          # Check file size, rotate if over 50k
-          if File.size("#{ENV['HOME']}/log/leestoolbox-log.txt") > 49999
-            require 'fileutils'
-            i = 1
-            while File.exist? "#{ENV['HOME']}/log/leestoolbox-log#{i}.txt"
-              i += 1
-            end
-            FileUtils.mv("#{ENV['HOME']}/log/leestoolbox-log.txt","#{ENV['HOME']}/log/leestoolbox-log#{i}.txt")
-          end
-        end
-        log = Logger.new("#{ENV['HOME']}/log/leestoolbox-log.txt")
+        log = Logger.new("#{ENV['HOME']}/log/leestoolbox-log.txt", shift_age = 7, shift_size = 65536)
         log.formatter = proc do |severity, time, progname, msg|
           "#{time} - #{msg}\n"
         end
