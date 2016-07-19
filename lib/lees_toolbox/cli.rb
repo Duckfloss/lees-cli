@@ -88,7 +88,7 @@ module LeesToolbox
         allowed_formats = ["thumb","swatch","medium","large"].abbrev
         allowed_formats["lg"] = "large"
         if !allowed_formats[k].nil?
-          format << allowed_formats[k].to_sym
+          format << allowed_formats[k]
         else
           say "#{k} is not a valid image size. Please select th, sm, med, or lg"
           exit -1
