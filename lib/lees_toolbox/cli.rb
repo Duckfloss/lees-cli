@@ -34,8 +34,7 @@ module LeesToolbox
            :desc=>"List of sizes to convert to",
            :default=>["sw","med","lg"]
     def images
-      @params = {}
-      @params[:format] = get_format(options[:format])
+      @params = { :format => get_format(options[:format]) }
       if !options[:source].nil?
         if options[:source] =~ /\.[A-Za-z]{3,4}$/
           @params[:source] = check_file(options[:source], nil, "file")
@@ -54,9 +53,19 @@ module LeesToolbox
     end
 
     # COMMAND: ecimap
-    desc "ecimap", "Convert product style data to RPro's ECImap"
-    def ecimap
-      __method__.to_s
+    desc "eci [DIR] [SOURCE]", "Convert product style data to RPro's ECImap"
+    def eci(dir, source)
+      if %w[in out IN OUT].include? dir
+        @params = { :dir => dir }
+      else
+        say "Indicate whether data is come IN or going OUT from ECI"
+        exit -1
+      end
+      @params[:source] = check_file(source, "csv", "file")
+
+      $log = startlog
+      require 'tools/ecimap'
+      LeesToolbox.run(@params)
     end
 
     # COMMAND: markdown
