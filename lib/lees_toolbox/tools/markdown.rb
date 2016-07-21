@@ -11,7 +11,7 @@ module LeesToolbox
   class Markdown
 
     def initialize(params)
-      @source = open_csv(params[:source])
+      @descriptions = get_descriptions(params[:source])
       @type = params[:type]
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
@@ -27,7 +27,8 @@ module LeesToolbox
   
     # METHOD: open_csv(file)
     # Opens csv file and converts to proper format
-    def open_csv(file)
+    # Returns array of descriptions for translation
+    def get_descriptions(file)
       begin
         # Try UTF-8
         csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'UTF-8')
@@ -39,7 +40,23 @@ module LeesToolbox
         puts e
         exit
       end
-      csv_data
+
+      # Get just the descriptions column
+      # If :desc is present, that's it
+      headers = csv_data.headers
+      if headers.include?(:desc)
+        descriptions = csv_data[:desc]
+      else
+        # Otherwise, ask which column to use
+        header = :_
+        while !headers.include?(header.to_sym)
+          puts "Which column has product descriptions?"
+          headers.each { |h| print "\"#{h.to_s}\", " }
+          header = gets.chomp
+          descriptions = csv_data[header.to_sym]
+        end
+      end
+      descriptions
     end
 
 =begin
