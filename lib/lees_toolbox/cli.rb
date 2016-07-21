@@ -55,7 +55,7 @@ module LeesToolbox
     # COMMAND: ecimap
     desc "eci [DIR] [SOURCE]", "Convert product style data to RPro's ECImap"
     def eci(dir, source)
-      if %w[in out IN OUT].include? dir
+      if %w[in out].include? dir.downcase
         @params = { :dir => dir }
       else
         say "Indicate whether data is come IN or going OUT from ECI"
@@ -69,9 +69,20 @@ module LeesToolbox
     end
 
     # COMMAND: markdown
-    desc "markdown", "Format product description text for Lee's website"
-    def markdown
-      __method__.to_s
+    desc "markdown [SOURCE]", "Format product description text for Lee's website"
+    def markdown(source)
+      ext = File.extname(source)
+      if ext == ".csv" || ext == ".txt"
+        @params = { :source => check_file(source) }
+        @params[:type] = ext
+      else
+        say "The markdown command only accepts csv or txt files."
+        exit -1
+      end
+
+      $log = startlog
+      require 'tools/markdown'
+      LeesToolbox.run(@params)
     end
 
     # COMMAND: database
