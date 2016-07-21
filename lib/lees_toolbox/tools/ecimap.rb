@@ -11,22 +11,21 @@ module LeesToolbox
 
   class Eci_Map
 
-    TEMP_PATH = ENV['HOME']
-    ECI_PATH = "C:/DevKit/home/pos/testdata"
+    ECI_PATH = "R:/RETAIL/RPRO/EC"
     ECILinkINI = "ECLink.INI"
 
     def initialize(params)
       @dir = params[:dir].downcase
       @source = params[:source]
       @csv = CSV.read(@source, :headers=>true,:skip_blanks=>false,:header_converters=>:symbol)
+      @eci_map = get_eci("#{ECI_PATH}/#{ECILinkINI}")
     end
 
     def map
       if @dir == "in"
-        @eci_map = get_eci("#{ECI_PATH}/#{ECILinkINI}")
         in_it
       elsif @dir == "out"
-        @eci_map = get_eci(copy_eci(TEMP_PATH))
+        out_it
       end
     end
 
@@ -44,7 +43,7 @@ module LeesToolbox
       # Make a dictionary from ECI
       dictionary = {}
       attrs.each do |attr|
-        dictionary[attr] = @eci_map[attr]
+        dictionary[attr] = @eci_map["ATTR<_as_>#{attr}"]
       end
 
       # Open CSV and translate
@@ -60,62 +59,41 @@ module LeesToolbox
       end
     end
 
-    # METHOD: Get ECI's wordmapping dictionary
+    # METHOD: Get a hash of ECI's wordmapping dictionary
     def get_eci(ecilink)
       eci = IniFile.load(ecilink, :encoding=>'Windows-1252')
       wordmapping = eci['WordMapping']
-      map = {}
-
-      wordmapping.each do |k,v|
-        if k.match /^ATTR/
-          map[k.sub('ATTR<_as_>','')] = v
-        end
-      end
-      map
     end
 
-    # METHOD: Copy ECI's Ini file to temp directory
-    # so's we don't break something
-    def copy_eci(path)
+    # METHOD: Backup ECI's Ini file just in case
+    def backup_eci(path)
       dupfile = "#{path}/#{ECILinkINI}backup"
       FileUtils.cp("#{ECI_PATH}/#{ECILinkINI}", dupfile)
       dupfile
     end
 
-=begin
+    # METHOD: Send translations from local file to ECI
     def out_it
-      # Copy eci file to temp dir
-      temp_eci = copy_eci
-
-      # Parse ECI file
-      $wordmapping = get_eci(temp_eci)
-
-      $wordmapping.merge!($map_hash) do |attr,oldcolor,newcolor|
-        if oldcolor.nil?
-          newcolor
-        else
-          oldcolor
-        end
+      # Make a dictionary from CSV
+      dictionary = {}
+      @csv.to_a.uniq.drop(1).each do |row|
+        dictionary["ATTR<_as_>#{row[0]}"] = row[1]
       end
 
-      $wordmapping = $wordmapping.sort_by{|attr,color| attr.downcase}
-      newwordmapping = {}
-      $wordmapping.each do |attr,color|
-        newwordmapping["ATTR<_as_>#{attr}"] = color
-      end
+      # Merge dictionary into ECI
+      @eci_map.merge!(dictionary)
 
-      # Write eci to C:
-      $eci['WordMapping'] = newwordmapping
-      $eci.write
+      # Alphabetize
+      @eci_map = @eci_map.sort_by{ |k,v| k }
 
-      # Backup eci file in R:
-      FileUtils.cp("R:/RETAIL/RPRO/EC/ECLink.INI", "R:/RETAIL/RPRO/EC/ECLink.OLD")
-      # Then copy temp_eci to R:
-      FileUtils.cp("C:/Documents and Settings/pos/Desktop/Website/Toolbox/ECImap/data/ECLink.INI", "R:/RETAIL/RPRO/EC/ECLink.INI")
+      # Backup ECI file
+      backup_eci(ECI_PATH)
 
-      exit 0
+      # Write @eci_map to ECI file
+      ecifile = IniFile.load("#{ECI_PATH}/#{ECILinkINI}", :encoding=>'Windows-1252')
+      ecifile['WordMapping'] = @eci_map
+      ecifile.write
     end
-=end
   end
 end
 
