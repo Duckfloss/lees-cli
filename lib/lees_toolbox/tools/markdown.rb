@@ -22,10 +22,10 @@ module LeesToolbox
     
     def translate
       if @type == ".txt"
-        filter!(@descriptions)
+        format!(@descriptions)
       else
         @descriptions.each do |description|
-          filter!(description)
+          format!(description)
         end
       end
       write_to_file
@@ -76,13 +76,14 @@ module LeesToolbox
       descriptions
     end
 
-    # METHOD: filter!(text)
-    def filter!(text)
+    # METHOD: format!(text)
+    def format!(text)
+      output = "<ECI>"
       # Divide into hash of sections
       sections = sectionize(text)
       # Format each section
       sections.each do |section|
-        format(section)
+        output << filter(section)
       end
     end
 
@@ -98,14 +99,22 @@ module LeesToolbox
       sections
     end
 
-    # METHOD: format(section)
+    # METHOD: filter(section)
     # Use markdown rules to format section of text
-    def format(section)
+    def filter(section)
+      output = ""
       section.each do |k,body|
         k = k.split("#")
         head = k[0]
         rule = k[1]
-binding.pry
+
+        case head
+        when "product_name"
+        when "description"
+        when "features"
+        when "specs"
+        else
+        end
       end
 
     end
