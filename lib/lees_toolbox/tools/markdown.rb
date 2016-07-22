@@ -1,5 +1,5 @@
 require 'csv'
-require 'htmlentities'
+require 'yaml'
 
 module LeesToolbox
 
@@ -9,10 +9,11 @@ module LeesToolbox
   end
 
   class Markdown
+    HTML_FILTER = YAML.load(File.open("lib/lees_toolbox/tools/markdown/htmlmap.yml"))
 
     def initialize(params)
-      @descriptions = get_descriptions(params[:source])
       @type = params[:type]
+      @descriptions = get_descriptions(params[:source])
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
       @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "a")
@@ -20,45 +21,107 @@ module LeesToolbox
 
     
     def translate
-      
+      if @type == ".txt"
+        filter!(@descriptions)
+      else
+        @descriptions.each do |description|
+          filter!(description)
+        end
+      end
+      write_to_file
     end
 
     private
   
-    # METHOD: open_csv(file)
+    # METHOD: write_to_file
+    # write formatted descriptions back to file
+    def write_to_file
+    
+    end
+
+    # METHOD: get_descriptions(file)
     # Opens csv file and converts to proper format
     # Returns array of descriptions for translation
     def get_descriptions(file)
-      begin
-        # Try UTF-8
-        csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'UTF-8')
-      rescue
-        # Try again with Windows-1252 and convert to UTF-8
-        csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'Windows-1252:UTF-8')
-      rescue Exception => e
-        # Or not
-        puts e
-        exit
-      end
-
-      # Get just the descriptions column
-      # If :desc is present, that's it
-      headers = csv_data.headers
-      if headers.include?(:desc)
-        descriptions = csv_data[:desc]
+      if @type == ".txt"
+        descriptions = File.read(file)
       else
-        # Otherwise, ask which column to use
-        header = :_
-        while !headers.include?(header.to_sym)
-          puts "Which column has product descriptions?"
-          headers.each { |h| print "\"#{h.to_s}\", " }
-          header = gets.chomp
-          descriptions = csv_data[header.to_sym]
+        begin
+          # Try UTF-8
+          csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'UTF-8')
+        rescue
+          # Try again with Windows-1252 and convert to UTF-8
+          csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'Windows-1252:UTF-8')
+        rescue Exception => e
+          # Or not
+          puts e
+          exit
+        end
+        # Get just the descriptions column
+        # If :desc is present, that's it
+        headers = csv_data.headers
+        if headers.include?(:desc)
+          descriptions = csv_data[:desc]
+        else
+          # Otherwise, ask which column to use
+          header = :_
+          while !headers.include?(header.to_sym)
+            puts "Which column has product descriptions?"
+            headers.each { |h| print "\"#{h.to_s}\", " }
+            header = gets.chomp
+            descriptions = csv_data[header.to_sym]
+          end
         end
       end
       descriptions
     end
 
+    # METHOD: filter!(text)
+    def filter!(text)
+      # Divide into hash of sections
+      sections = sectionize(text)
+      # Format each section
+      sections.each do |section|
+        format(section)
+      end
+    end
+
+    # METHOD: sectionize(text)
+    # Divide MD-formatted text into hash of component sections
+    def sectionize(text)
+      sections = {}
+      splits = text.split("{").delete_if {|i| i == "" || i == nil}
+      splits.each do |splitted|
+        part = splitted.split("}")
+        sections[part[0]] = part[1].strip
+      end
+      sections
+    end
+
+    # METHOD: format(section)
+    # Use markdown rules to format section of text
+    def format(section)
+      section.each do |k,body|
+        k = k.split("#")
+        head = k[0]
+        rule = k[1]
+binding.pry
+      end
+
+    end
+
+    # METHOD: strip_chars(text)
+    # Removes some weird characters
+    def strip_chars(text)
+      
+    end
+
+    # METHOD: clean_html(text)
+    # Cleans up special characters in html
+    def clean_html(text)
+
+    end
+    
 =begin
 # Converts the product description into a hash
 # with the "product_name",
