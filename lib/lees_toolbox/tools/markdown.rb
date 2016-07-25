@@ -1,5 +1,6 @@
 require 'csv'
 require 'yaml'
+require 'rchardet'
 
 module LeesToolbox
 
@@ -16,7 +17,7 @@ module LeesToolbox
       @descriptions = get_descriptions(params[:source])
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
-      @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "a")
+      @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "w")
     end
 
     
@@ -28,6 +29,7 @@ module LeesToolbox
           format!(description)
         end
       end
+      @descriptions
       write_to_file
     end
 
@@ -36,15 +38,27 @@ module LeesToolbox
     # METHOD: write_to_file
     # write formatted descriptions back to file
     def write_to_file
-    
+      @target << @descriptions
+      if !@target.closed?
+        @target.close
+      end
     end
 
     # METHOD: get_descriptions(file)
     # Opens csv file and converts to proper format
     # Returns array of descriptions for translation
     def get_descriptions(file)
+      # Convert to UTF-8
+      if CharDet.detect(File.read(file))["encoding"].downcase != "utf-8"
+        encoder = Encoding::Converter.new("Windows-1252", "UTF-8", :universal_newline=>true)
+        file = encoder.convert(File.read(file))
+      else
+        file = File.read(file)
+      end
+
+
       if @type == ".txt"
-        descriptions = File.read(file)
+        descriptions = file
       else
         begin
           # Try UTF-8
@@ -85,13 +99,16 @@ module LeesToolbox
       sections.each do |section|
         output << filter(section)
       end
+      output
     end
 
     # METHOD: sectionize(text)
     # Divide MD-formatted text into hash of component sections
     def sectionize(text)
       sections = {}
-      splits = text.split("{").delete_if {|i| i == "" || i == nil}
+      splits = text.split("{")
+      splits.delete_at(0)
+#binding.pry
       splits.each do |splitted|
         part = splitted.split("}")
         sections[part[0]] = part[1].strip
@@ -102,27 +119,61 @@ module LeesToolbox
     # METHOD: filter(section)
     # Use markdown rules to format section of text
     def filter(section)
-      output = ""
-      section.each do |k,body|
-        k = k.split("#")
-        head = k[0]
-        rule = k[1]
+      # section should be a paired array
+      section[0] = section[0].split("#")
+      head = section[0][0]
+      rule = section[0][1]
 
-        case head
-        when "product_name"
-        when "description"
-        when "features"
-        when "specs"
-        else
-        end
+      if head == "product_name"
+        body = title_text(section[1])
+      else
+        body = section[1]
       end
+    
+      body
+    end
 
+    # METHOD: title_text(text)
+    # Format text in title case
+    def title_text(text)
+      # Words we don't cap
+      no_cap = ["a","an","the","with","and","but","or","on","in","at","to"]
+      # Strip out dumb characters
+      title = strip_chars(text)
+      # Cycle through words
+      title = title.split
+      title.map! do |word|
+        # First word is Vendor name - don't mess with it
+        if word != title[0]
+          # If asterisked or starts with a period, leave it alone
+          if word[0] == "*"
+            thisword = word.sub!("*","")
+          # If it is a number leave it alone
+          elsif word[0] =~ /[\.\d]/
+            thisword = word
+          # If there's a dash and the word's longer than 1 char
+          elsif word.include?('-') && word.length > 1
+            # Split at - and cap both sides
+            thisword = word.split('-').each{|i| i.capitalize!}.join('-')
+          # If in no_cap list, don't cap it
+          elsif no_cap.include?(word.downcase)
+            thisword = word.downcase
+          # Otherwise, cap it
+          else
+            thisword = word.downcase.capitalize
+          end
+        else
+          thisword = word
+        end
+        thisword
+      end
+      title.join(' ')
     end
 
     # METHOD: strip_chars(text)
-    # Removes some weird characters
+    # Removes dumb weird characters
     def strip_chars(text)
-      
+      text
     end
 
     # METHOD: clean_html(text)
@@ -130,7 +181,7 @@ module LeesToolbox
     def clean_html(text)
 
     end
-    
+
 =begin
 # Converts the product description into a hash
 # with the "product_name",
@@ -173,42 +224,6 @@ def file_sanitizer(file)
   content.gsub!("\r\n","\n")
   file.write(content)
 end
-
-# Capitalize most words in title
-def title_case(string)
-  # Words we don't cap
-  no_cap = ["a","an","the","with","and","but","or","on","in","at","to"]
-
-  # Cycle through words
-  title = string.split
-  title.map! do |word|
-  # Assume first word is Vendor name and don't mess with it
-    if word != title[0]
-      # If asterisked or starts with a period, leave it alone
-      if word[0] == "*"
-        thisword = word.sub!("*","")
-      # If it is a number leave it alone
-      elsif word[0] =~ /[\.\d]/
-        thisword = word
-      # If there's a dash and the word's longer than 1 char
-      elsif word.include?('-') && word.length > 1
-        # Split at - and cap both sides
-        thisword = word.split('-').each{|i| i.capitalize!}.join('-')
-      # If in no_cap list, don't cap it
-      elsif no_cap.include?(word.downcase)
-        thisword = word.downcase
-      # Otherwise, cap it
-      else
-        thisword = word.downcase.capitalize
-      end
-    else
-      thisword = word
-    end
-    thisword
-  end
-  title.join(' ')
-end
-
 
 
 # sanitize and capitalize
