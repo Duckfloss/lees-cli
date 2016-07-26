@@ -20,16 +20,18 @@ module LeesToolbox
       @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "w")
     end
 
-    
     def translate
       if @type == ".txt"
         format!(@descriptions)
       else
+        output = "descriptions\n"
         @descriptions.each do |description|
-          format!(description)
+          output << format!(description).gsub(/[\n\"]/, "\n"=>'\n', '"'=>'\"')
+          output << "\n"
         end
+#binding.pry
       end
-      @descriptions
+      @descriptions = output
       write_to_file
     end
 
@@ -49,30 +51,23 @@ module LeesToolbox
     # Returns array of descriptions for translation
     def get_descriptions(file)
       # Convert to UTF-8
-      if CharDet.detect(File.read(file))["encoding"].downcase != "utf-8"
-        encoder = Encoding::Converter.new("Windows-1252", "UTF-8", :universal_newline=>true)
-        file = encoder.convert(File.read(file))
-      else
-        file = File.read(file)
-      end
+      enc = CharDet.detect(File.read(file))["encoding"]
 
       # Header_converter proc
       nospaces = Proc.new{ |head| head.gsub(" ","_") }
 
       if @type == ".txt"
-        descriptions = file
-      else
-        begin
-          # Try UTF-8
-          csv_data = CSV.parse(file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => 'UTF-8')
-        rescue Exception => e
-          puts e
-          exit -1
+        if enc["encoding"].downcase != "utf-8"
+          encoder = Encoding::Converter.new(enc, "UTF-8", :universal_newline=>true)
+          descriptions = encoder.convert(File.read(file))
+        else
+          descriptions = File.read(file)
         end
+      else
+        csv_data = CSV.read(file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => "#{enc}:UTF-8")
         # Get just the descriptions column
         # If :desc is present, that's it
         headers = csv_data.headers
-#binding.pry
         if headers.include?("desc")
           descriptions = csv_data["desc"]
         else
