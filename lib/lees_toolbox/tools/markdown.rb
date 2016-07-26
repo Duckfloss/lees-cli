@@ -56,34 +56,34 @@ module LeesToolbox
         file = File.read(file)
       end
 
+      # Header_converter proc
+      nospaces = Proc.new{ |head| head.gsub(" ","_") }
 
       if @type == ".txt"
         descriptions = file
       else
         begin
           # Try UTF-8
-          csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'UTF-8')
-        rescue
-          # Try again with Windows-1252 and convert to UTF-8
-          csv_data = CSV.read(file, :headers => true, :skip_blanks => true, :header_converters => :symbol, :encoding => 'Windows-1252:UTF-8')
+          csv_data = CSV.parse(file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => 'UTF-8')
         rescue Exception => e
-          # Or not
           puts e
-          exit
+          exit -1
         end
         # Get just the descriptions column
         # If :desc is present, that's it
         headers = csv_data.headers
-        if headers.include?(:desc)
-          descriptions = csv_data[:desc]
+#binding.pry
+        if headers.include?("desc")
+          descriptions = csv_data["desc"]
         else
           # Otherwise, ask which column to use
-          header = :_
-          while !headers.include?(header.to_sym)
+          header = ""
+          while !headers.include?(header)
             puts "Which column has product descriptions?"
-            headers.each { |h| print "\"#{h.to_s}\", " }
+            headers.each { |h| puts "\t#{h}" }
+            print "#: "
             header = gets.chomp
-            descriptions = csv_data[header.to_sym]
+            descriptions = csv_data[header]
           end
         end
       end
