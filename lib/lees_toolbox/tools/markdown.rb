@@ -1,6 +1,7 @@
 require 'csv'
 require 'yaml'
 require 'rchardet'
+require 'htmlentities'
 
 module LeesToolbox
 
@@ -10,10 +11,35 @@ module LeesToolbox
   end
 
   class Markdown
-    HTML_FILTER = YAML.load(File.open("lib/lees_toolbox/tools/markdown/htmlmap.yml"))
+
+    SPECIAL_CHARS = { "&acute;" => "'",
+                      "&amp;" => "&",
+                      "&apos;" => "'",
+                      "&copy;" => "",
+                      "&ldquo;" => '"',
+                      "&lsquo;" => "'",
+                      "&nbsp;" => " ",
+                      "&ndash;" => "-",
+                      "&mdash;" => "—",
+                      "&rdquo;" => '"',
+                      "&reg;" => "",
+                      "&rsquo;" => "'",
+                      "&trade;" => "",
+                      "&quot;" => '"',
+                      "&lt;" => "<",
+                      "&gt;" => ">",
+                      "&frac12;" => "1/2",
+                      "&frac14;" => "1/4",
+                      "&frac34;" => "3/4",
+                      "&sup1;" => "1",
+                      "&sup2;" => "2",
+                      "&sup3;" => "3",
+                      "  " => " "
+                      }
 
     def initialize(params)
       @type = params[:type]
+      @file = sanitize(params[:source])
       @descriptions = get_descriptions(params[:source])
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
@@ -21,26 +47,26 @@ module LeesToolbox
     end
 
     def translate
+      output = ""
       if @type == ".txt"
-        format!(@descriptions)
+        output = format!(@descriptions)
       else
         output = "descriptions\n"
         @descriptions.each do |description|
           output << format!(description).gsub(/[\n\"]/, "\n"=>'\n', '"'=>'\"')
           output << "\n"
         end
-#binding.pry
       end
-      @descriptions = output
-      write_to_file
+
+      write_to_file(output)
     end
 
     private
   
-    # METHOD: write_to_file
+    # METHOD: write_to_file(text)
     # write formatted descriptions back to file
-    def write_to_file
-      @target << @descriptions
+    def write_to_file(text)
+      @target << text
       if !@target.closed?
         @target.close
       end
@@ -57,7 +83,7 @@ module LeesToolbox
       nospaces = Proc.new{ |head| head.gsub(" ","_") }
 
       if @type == ".txt"
-        if enc["encoding"].downcase != "utf-8"
+        if enc.downcase != "utf-8"
           encoder = Encoding::Converter.new(enc, "UTF-8", :universal_newline=>true)
           descriptions = encoder.convert(File.read(file))
         else
@@ -103,7 +129,6 @@ module LeesToolbox
       sections = {}
       splits = text.split("{")
       splits.delete_at(0)
-#binding.pry
       splits.each do |splitted|
         part = splitted.split("}")
         sections[part[0]] = part[1].strip
@@ -171,10 +196,33 @@ module LeesToolbox
       text
     end
 
-    # METHOD: clean_html(text)
-    # Cleans up special characters in html
-    def clean_html(text)
-
+    # METHOD: sanitize(file)
+    # Decodes file and converts to UTF-8
+    # Replaces special characters with HTML
+    # Outputs contents as a string
+    def sanitize(file)
+      # Detect file encoding
+      enc = CharDet.detect(File.read(file))["encoding"]
+      # If encoding is not utf-8 assume it's Windows
+      if enc.downcase != "utf-8"
+        # Open file for reading
+        file = File.open(file, mode:'r')
+        # And convert it
+        encoder = Encoding::Converter.new(["universal_newline",["Windows-1252","UTF-8"]])
+        output = encoder.convert(file.read)
+      else
+        # Otherwise just read it
+        file = File.open(file, mode:'r:UTF-8')
+        output = file.read
+      end
+      # Convert special characters to HTML
+      encoder = HTMLEntities.new(:html4)
+      output = encoder.encode(output, :named)
+      # Go back through and put some characters back
+      SPECIAL_CHARS.each do |k,v|
+        output.gsub!(k,v)
+      end
+      output
     end
 
 =begin
