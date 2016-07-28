@@ -34,97 +34,172 @@ module LeesToolbox
                       "&sup1;" => "1",
                       "&sup2;" => "2",
                       "&sup3;" => "3",
-                      "  " => " "
+                      "\r\n" => "\n",
+                      "\r" => "\n"
                       }
 
     def initialize(params)
       @type = params[:type]
-      @file = sanitize(params[:source])
-      @descriptions = get_descriptions(params[:source])
+      @file = params[:source]
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
       @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "w")
     end
 
     def translate
-      output = ""
-      if @type == ".txt"
-        output = format!(@descriptions)
+     # Detect file encoding
+      if CharDet.detect(File.read(@file))["encoding"] != "UTF-8"
+        encoding = "Windows-1252:UTF-8"
       else
-        output = "descriptions\n"
-        @descriptions.each do |description|
-          output << format!(description).gsub(/[\n\"]/, "\n"=>'\n', '"'=>'\"')
-          output << "\n"
-        end
+        encoding = "UTF-8:UTF-8"
       end
 
+      # Open file
+      if @type == ".csv"
+        # Header_converter proc
+        nospaces = Proc.new{ |head| head.gsub(" ","_") }
+        # Open with CSV
+        file = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)
+      else
+        file = File.open(@file, "r", :encoding => encoding)
+      end
+
+      output = parse(file)
       write_to_file(output)
+
     end
 
     private
-  
+
+    # METHOD: parse(file)
+    # 
+    def parse(file)
+      if @type == ".csv"
+        descriptions = get_descriptions(file)
+        descriptions.each do |row|
+          format(row)
+        end
+      else
+        # Do it with text
+      end
+    end
+
+    # METHOD: format
+    # Divide text into sections and then filter
+    def format(row)
+      output = "<ECI>\n<div><font face='verdana'>\n"
+      # Divide into hash of sections and
+      # Format each section
+      sections = sectionize(row).to_a.map! { |section| filter(section) }
+binding.pry
+
+      # Wrap each section with a header and give it to output
+      sections.each do |section|
+
+      end
+      output << "</font></div>"
+    end
+
+    # METHOD: filter(section)
+    # Format section into HTML
+    def filter(section)
+      # section should be a paired array
+      section[0] = section[0].split("#")
+      head = section[0][0]
+      rule = section[0][1]
+
+      if head == "product_name"
+        # product_name has but one format
+        body = form_of_title(section[1])
+      elsif head == "description"
+        # description is always a graf
+        body = form_of_graf(sanitize(section[1]))
+      else
+        # everything else is a list unless otherwise stated
+        case head
+          when "graf"
+            body = form_of_graf(sanitize(section[1]))
+          when "table"
+            body = form_of_table(sanitize(section[1]))
+          when "list"
+            body = form_of_list(sanitize(section[1]))
+          else
+            body = form_of_list(sanitize(section[1]))
+binding.pry
+        end
+      end
+      [ head, body ]
+    end
+    
+    # METHOD: form_of_graf(text)
+    # Formats text block as a paragraph
+    def form_of_graf(text)
+      text = text.split("\n")
+      text.map! do |line|
+        line.strip!
+        line.insert(0,"<p>")
+        line.insert(-1,"</p>")
+      end
+      text.join("\n")
+    end
+
+    # METHOD: form_of_table(text)
+    # Formats block of text as a table
+    def form_of_table(text)
+
+    end
+
+    # METHOD: form_of_list(text)
+    # Formats block of text as a list
+    def form_of_list(text)
+      output = "<ul>\n"
+      # If there are dividers, remove returns
+      text.gsub!(/([:]) *\n+/,"\1 ")
+      text = text.split("\n")
+      text.each do |line|
+        line.strip!
+        output << "\t<li>#{line}</li>\n"
+      end
+      output << "</ul>\n"
+    end
+
     # METHOD: write_to_file(text)
-    # write formatted descriptions back to file
-    def write_to_file(text)
-      @target << text
+    # write formatted text back to file
+    def write_to_file(*text)
+      if text
+        @target << text
+      end
       if !@target.closed?
         @target.close
       end
     end
 
-    # METHOD: get_descriptions(file)
-    # Opens csv file and converts to proper format
-    # Returns array of descriptions for translation
-    def get_descriptions(file)
-      # Convert to UTF-8
-      enc = CharDet.detect(File.read(file))["encoding"]
-
-      # Header_converter proc
-      nospaces = Proc.new{ |head| head.gsub(" ","_") }
-
-      if @type == ".txt"
-        if enc.downcase != "utf-8"
-          encoder = Encoding::Converter.new(enc, "UTF-8", :universal_newline=>true)
-          descriptions = encoder.convert(File.read(file))
-        else
-          descriptions = File.read(file)
-        end
+    # METHOD: get_descriptions(data)
+    # Returns array of descriptions
+    def get_descriptions(data)
+      # Get just the descriptions column
+      # If :desc is present, that's it
+      data = data.read
+      headers = data.headers
+      if headers.include?("desc")
+        descriptions = data["desc"]
       else
-        csv_data = CSV.read(file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => "#{enc}:UTF-8")
-        # Get just the descriptions column
-        # If :desc is present, that's it
-        headers = csv_data.headers
-        if headers.include?("desc")
-          descriptions = csv_data["desc"]
-        else
-          # Otherwise, ask which column to use
-          header = ""
-          while !headers.include?(header)
-            puts "Which column has product descriptions?"
-            headers.each { |h| puts "\t#{h}" }
-            print "#: "
-            header = gets.chomp
-            descriptions = csv_data[header]
-          end
+        # Otherwise, ask which column to use
+        header = ""
+        while !headers.include?(header)
+          puts "Which column has product descriptions?"
+          headers.each { |h| puts "\t#{h}" }
+          print "#: "
+          header = gets.chomp
+          descriptions = data[header]
         end
       end
       descriptions
     end
 
-    # METHOD: format!(text)
-    def format!(text)
-      output = "<ECI>"
-      # Divide into hash of sections
-      sections = sectionize(text)
-      # Format each section
-      sections.each do |section|
-        output << filter(section)
-      end
-      output
-    end
-
     # METHOD: sectionize(text)
-    # Divide MD-formatted text into hash of component sections
+    # Divide MD-formatted text into sections
+    # Returns binary array
     def sectionize(text)
       sections = {}
       splits = text.split("{")
@@ -136,32 +211,13 @@ module LeesToolbox
       sections
     end
 
-    # METHOD: filter(section)
-    # Use markdown rules to format section of text
-    def filter(section)
-      # section should be a paired array
-      section[0] = section[0].split("#")
-      head = section[0][0]
-      rule = section[0][1]
-
-      if head == "product_name"
-        body = title_text(section[1])
-      else
-        body = section[1]
-      end
-    
-      body
-    end
-
-    # METHOD: title_text(text)
+    # METHOD: form_of_title(text)
     # Format text in title case
-    def title_text(text)
+    def form_of_title(text)
       # Words we don't cap
       no_cap = ["a","an","the","with","and","but","or","on","in","at","to"]
-      # Strip out dumb characters
-      title = strip_chars(text)
       # Cycle through words
-      title = title.split
+      title = text.split
       title.map! do |word|
         # First word is Vendor name - don't mess with it
         if word != title[0]
@@ -185,42 +241,28 @@ module LeesToolbox
         else
           thisword = word
         end
-        thisword
+        sanitize(thisword)
       end
-      title.join(' ')
+      "<h2>#{title.join(' ')}<\h2>"
     end
 
-    # METHOD: strip_chars(text)
-    # Removes dumb weird characters
-    def strip_chars(text)
-      text
-    end
-
-    # METHOD: sanitize(file)
-    # Decodes file and converts to UTF-8
+    # METHOD: sanitize(input)
     # Replaces special characters with HTML
-    # Outputs contents as a string
-    def sanitize(file)
-      # Detect file encoding
-      enc = CharDet.detect(File.read(file))["encoding"]
-      # If encoding is not utf-8 assume it's Windows
-      if enc.downcase != "utf-8"
-        # Open file for reading
-        file = File.open(file, mode:'r')
-        # And convert it
-        encoder = Encoding::Converter.new(["universal_newline",["Windows-1252","UTF-8"]])
-        output = encoder.convert(file.read)
-      else
-        # Otherwise just read it
-        file = File.open(file, mode:'r:UTF-8')
-        output = file.read
-      end
+    def sanitize(input)
       # Convert special characters to HTML
       encoder = HTMLEntities.new(:html4)
-      output = encoder.encode(output, :named)
+      output = encoder.encode(input, :named)
       # Go back through and put some characters back
       SPECIAL_CHARS.each do |k,v|
         output.gsub!(k,v)
+      end
+      # Get rid of double returns
+      while output.include?("\n\n")
+        output.gsub!("\n\n","\n")
+      end
+      # get rid of double spaces
+      while output.include?("  ")
+        output.gsub!("  "," ")
       end
       output
     end
