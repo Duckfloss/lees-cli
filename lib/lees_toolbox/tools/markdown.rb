@@ -91,7 +91,7 @@ module LeesToolbox
       # Divide into hash of sections and
       # Format each section
       sections = sectionize(row).to_a.map! { |section| filter(section) }
-binding.pry
+#binding.pry
 
       # Wrap each section with a header and give it to output
       sections.each do |section|
@@ -116,37 +116,48 @@ binding.pry
         body = form_of_graf(sanitize(section[1]))
       else
         # everything else is a list unless otherwise stated
-        case head
+        case rule
           when "graf"
             body = form_of_graf(sanitize(section[1]))
           when "table"
+#binding.pry
             body = form_of_table(sanitize(section[1]))
           when "list"
             body = form_of_list(sanitize(section[1]))
           else
             body = form_of_list(sanitize(section[1]))
-binding.pry
         end
       end
+binding.pry
       [ head, body ]
     end
     
     # METHOD: form_of_graf(text)
     # Formats text block as a paragraph
     def form_of_graf(text)
-      text = text.split("\n")
-      text.map! do |line|
+      output = text.split("\n")
+      output.map! do |line|
         line.strip!
         line.insert(0,"<p>")
         line.insert(-1,"</p>")
       end
-      text.join("\n")
+      sanitize(output.join("\n"))
     end
 
     # METHOD: form_of_table(text)
     # Formats block of text as a table
     def form_of_table(text)
+      output = "<table>"
+      # Figure out what seperator is
+      commas = text.scan(",").length
+      tabs = text.scan("\t").length
+      commas > tabs ? sep="," : sep="\t"  # Whichever is more is the seperator
+      # Divide text into array of arrays
+      table = text.split("\n").map! { |row| row.split(sep) }
+#binding.pry
 
+
+      output = sanitize(output)
     end
 
     # METHOD: form_of_list(text)
@@ -183,6 +194,7 @@ binding.pry
         output << "\t\t</ul>\n\t</li>\n"
       end
       output << "</ul>"
+      output = sanitize(output)
     end
 
     # METHOD: write_to_file(text)
@@ -228,7 +240,7 @@ binding.pry
       splits.delete_at(0)
       splits.each do |splitted|
         part = splitted.split("}")
-        sections[part[0]] = part[1].strip
+        sections[part[0]] = part[1]
       end
       sections
     end
@@ -286,7 +298,7 @@ binding.pry
       while output.include?("  ")
         output.gsub!("  "," ")
       end
-      output
+      output.strip
     end
 
 =begin
