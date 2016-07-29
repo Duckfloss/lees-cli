@@ -153,14 +153,36 @@ binding.pry
     # Formats block of text as a list
     def form_of_list(text)
       output = "<ul>\n"
-      # If there are dividers, remove returns
+      listdepth = 1
+      # If there are dividers, remove "\n"s
       text.gsub!(/([:]) *\n+/,"\1 ")
       text = text.split("\n")
+      # Wrap each line in <li>s
       text.each do |line|
         line.strip!
-        output << "\t<li>#{line}</li>\n"
+        # If line starts with *, sublist
+        if line[0] == "*"
+          line.sub!("*","\t<li style=\"list-style:none\"><strong>")
+          output << "#{line}</strong>\n"
+          output << "\t\t<ul>\n"
+          listdepth += 1
+        # If line starts with -, continue sublist
+        elsif line[0] == "-"
+          line.sub!("-","\t\t<li>")
+          output << "#{line}</li>\n"
+        else
+          if listdepth > 1
+            listdepth -= 1
+            output << "\t\t</ul>\n\t</li>\n"
+          end
+          output << "\t<li>#{line}</li>\n"
+        end
       end
-      output << "</ul>\n"
+      # If we get to end and haven't closed sublist, close it
+      if listdepth > 1
+        output << "\t\t</ul>\n\t</li>\n"
+      end
+      output << "</ul>"
     end
 
     # METHOD: write_to_file(text)
