@@ -208,36 +208,37 @@ module LeesToolbox
     def form_of_list(text)
       output = "<ul>\n"
       listdepth = 1
-      # If there are dividers, remove "\n"s
-      text.gsub!(/[:]+[ \n\t]*/,": ")
+      text.gsub!(/[:]+[ \n\t]*/,": ")      # If colons, remove extra spaces and linebreaks
       text = text.split("\n")
       # Wrap each line in <li>s
       text.each do |line|
+        if line.length < 2 then next end        # Skip empty line
         line.strip!
         # If line starts with *, sublist
         if line[0] == "*"
-          line.sub!("*","\t<li style=\"list-style:none\"><strong>")
+          line = sanitize(line)
+          line.sub!("*","\t\t<li style=\"list-style:none\"><strong>")
           output << "#{line}</strong>\n"
-          output << "\t\t<ul>\n"
+          output << "\t\t\t<ul>\n"
           listdepth += 1
         # If line starts with -, continue sublist
         elsif line[0] == "-"
-          line.sub!("-","\t\t<li>")
+          line = sanitize(line)
+          line.sub!("-","\t\t\t\t<li>")
           output << "#{line}</li>\n"
         else
           if listdepth > 1
             listdepth -= 1
-            output << "\t\t</ul>\n\t</li>\n"
+            output << "\t\t\t</ul>\n\t\t</li>\n"
           end
-          output << "\t<li>#{line}</li>\n"
+          output << "\t\t<li>#{sanitize(line)}</li>\n"
         end
       end
       # If we get to end and haven't closed sublist, close it
       if listdepth > 1
-        output << "\t\t</ul>\n\t</li>\n"
+        output << "\t\t\t</ul>\n\t\t</li>\n"
       end
-      output << "</ul>"
-      sanitize(output)
+      output << "\t</ul>\n"
     end
 
     # METHOD: get_descriptions(data)
