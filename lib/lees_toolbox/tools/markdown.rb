@@ -43,7 +43,7 @@ module LeesToolbox
       @file = params[:source]
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
-      @target = File.open("#{path}/#{filename}-FILTERED#{@type}", "w")
+      @target = "#{path}/#{filename}-FILTERED#{@type}"
     end
 
     def translate
@@ -58,30 +58,49 @@ module LeesToolbox
       if @type == ".csv"
         # Header_converter proc
         nospaces = Proc.new{ |head| head.gsub(" ","_") }
-enc = Encoding::Converter.new(["universal_newline", encoding.split(":")])
         # Open with CSV
-        file = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)
+        data = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)
       else
-        file = File.open(@file, "r", :encoding => encoding)
+        data = File.open(@file, "r", :encoding => encoding)
       end
 
-      output = parse(file)
+      output = parse(data)
       write_to_file(output)
-
     end
 
     private
 
-    # METHOD: parse(file)
+    # METHOD: parse(data)
     # 
-    def parse(file)
+    def parse(data)
       if @type == ".csv"
-        descriptions = get_descriptions(file)
+        output = ["Desc"]
+        descriptions = get_descriptions(data)
         descriptions.each do |row|
-          format(row)
+          output << format(row)
         end
       else
         # Do it with text
+        output = ""
+      end
+      output
+    end
+
+    # METHOD: write_to_file(text)
+    # write formatted text back to file
+    def write_to_file(data)
+      target = File.open(@target, "w")
+      if @type == ".csv"
+        CSV.open(@target, "w", :encoding=>"UTF-8", :headers=>true) do |csv|
+          data.each do |row|
+            csv << [row]
+          end
+        end
+      else
+        target << text
+      end
+      if !target.closed?
+        target.close
       end
     end
 
@@ -93,9 +112,13 @@ enc = Encoding::Converter.new(["universal_newline", encoding.split(":")])
       # Format each section
       sections = sectionize(row).to_a.map! { |section| filter(section) }
 
-      # Wrap each section with a header and give it to output
+      # Wrap each section with a div and give it to output
       sections.each do |section|
-
+        header = section[0]=="product_name" ? "" : "\t<u>#{section[0].capitalize!}</u>\n"
+        output << "<div id=\"#{section[0]}\">\n"
+        output << header
+        output << "\t#{section[1]}\n"
+        output << "</div>\n"
       end
       output << "</font></div>"
     end
@@ -222,17 +245,6 @@ enc = Encoding::Converter.new(["universal_newline", encoding.split(":")])
         output << "\t\t</ul>\n\t</li>\n"
       end
       output << "</ul>"
-    end
-
-    # METHOD: write_to_file(text)
-    # write formatted text back to file
-    def write_to_file(*text)
-      if text
-        @target << text
-      end
-      if !@target.closed?
-        @target.close
-      end
     end
 
     # METHOD: get_descriptions(data)
