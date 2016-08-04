@@ -58,6 +58,7 @@ module LeesToolbox
       if @type == ".csv"
         # Header_converter proc
         nospaces = Proc.new{ |head| head.gsub(" ","_") }
+enc = Encoding::Converter.new(["universal_newline", encoding.split(":")])
         # Open with CSV
         file = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)
       else
@@ -91,7 +92,6 @@ module LeesToolbox
       # Divide into hash of sections and
       # Format each section
       sections = sectionize(row).to_a.map! { |section| filter(section) }
-#binding.pry
 
       # Wrap each section with a header and give it to output
       sections.each do |section|
@@ -113,56 +113,84 @@ module LeesToolbox
         body = form_of_title(section[1])
       elsif head == "description"
         # description is always a graf
-        body = form_of_graf(sanitize(section[1]))
+        body = form_of_graf(section[1])
       else
         # everything else is a list unless otherwise stated
         case rule
           when "graf"
-            body = form_of_graf(sanitize(section[1]))
+            body = form_of_graf(section[1])
           when "table"
-#binding.pry
-            body = form_of_table(sanitize(section[1]))
+            body = form_of_table(section[1])
           when "list"
-            body = form_of_list(sanitize(section[1]))
+            body = form_of_list(section[1])
           else
-            body = form_of_list(sanitize(section[1]))
+            body = form_of_list(section[1])
         end
       end
-binding.pry
       [ head, body ]
     end
     
     # METHOD: form_of_graf(text)
     # Formats text block as a paragraph
     def form_of_graf(text)
+      text = sanitize(text)
       output = text.split("\n")
       output.map! do |line|
         line.strip!
         line.insert(0,"<p>")
         line.insert(-1,"</p>")
       end
-      sanitize(output.join("\n"))
+      output.join("\n")
     end
 
     # METHOD: form_of_table(text)
     # Formats block of text as a table
     def form_of_table(text)
-      output = "<table>"
+      # Clean up newlines
+      text.gsub!(/\r\n/,"\n")
       # Figure out what seperator is
       commas = text.scan(",").length
       tabs = text.scan("\t").length
-      commas > tabs ? sep="," : sep="\t"  # Whichever is more is the seperator
+      commas > tabs ? sep="," : text.gsub!("\t","|"); sep="|"  # Whichever is more is the seperator
+      # Now take out white space
+      text.strip!
       # Divide text into array of arrays
       table = text.split("\n").map! { |row| row.split(sep) }
-#binding.pry
-
-
-      output = sanitize(output)
+      # Count rows and columns
+      rows = table.length
+      columns = 0
+      table.each do |row|
+        row.length > columns ? columns = row.length : columns
+      end
+      output = "<table>\n"
+      r = 1 # Row counter
+      table.each do |row|                            # Now build table
+        if row.join.length < 1 then next end         # If row is empty then skip
+        output << "\t<tr>\n"                         # Start row
+        c = 0                                        # Column counter
+        colspan = row.length < columns ? columns-row.length+1 : false  # Do we need colspan
+        code = r==1 ? "th" : "td"                    # HTML cell code
+        row.each do |field|
+          c += 1
+          output << "\t\t<#{code}"                   # Start tablecell
+          if colspan && c == row.length              # If we're on the last cell, and need a colspan
+            output << " colspan=\"#{colspan}\">"     # Add colspan
+          else                                       # Otherwise
+            output << ">"                            # Just close bracket
+          end
+          output << sanitize(field)                  # Sanitize text
+          output << "</#{code}>\n"                   # Close tablecell
+        end
+        output << "\t</tr>\n"                        # And close row
+        r += 1
+      end
+      output << "</table>"                           # And close table
     end
 
     # METHOD: form_of_list(text)
     # Formats block of text as a list
     def form_of_list(text)
+      text = sanitize(text)
       output = "<ul>\n"
       listdepth = 1
       # If there are dividers, remove "\n"s
@@ -194,7 +222,6 @@ binding.pry
         output << "\t\t</ul>\n\t</li>\n"
       end
       output << "</ul>"
-      output = sanitize(output)
     end
 
     # METHOD: write_to_file(text)
@@ -298,6 +325,7 @@ binding.pry
       while output.include?("  ")
         output.gsub!("  "," ")
       end
+      # Strip off white space on either side
       output.strip
     end
 
