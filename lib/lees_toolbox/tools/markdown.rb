@@ -56,16 +56,12 @@ module LeesToolbox
 
       # Open file
       if @type == ".csv"
-        # Header_converter proc
-        nospaces = Proc.new{ |head| head.gsub(" ","_") }
-        # Open with CSV
-        data = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)
-      else
-        data = File.open(@file, "r", :encoding => encoding)
+        nospaces = Proc.new{ |head| head.gsub(" ","_") }    # Special header filter
+        data = CSV.open(@file, :headers => true, :header_converters => [:downcase, nospaces], :skip_blanks => true, :encoding => encoding)        # Open CSV
+      elsif @type == ".txt"
+        data = File.open(@file, "r", :encoding => encoding) # Open File
       end
-
-      output = parse(data)
-      write_to_file(output)
+      write_to_file(parse(data))                            # Parse data and write it to file
     end
 
     private
@@ -73,20 +69,20 @@ module LeesToolbox
     # METHOD: parse(data)
     # 
     def parse(data)
-      if @type == ".csv"
+      if @type == ".csv"                      # If this is a CSV
+        descriptions = get_descriptions(data) # We're gonna split it into rows
         output = ["Desc"]
-        descriptions = get_descriptions(data)
         descriptions.each do |row|
-          output << format(row)
+          output << format(row)               # And format each line
         end
-      elsif @type == ".txt"
-        output = format(data.read)
+      elsif @type == ".txt"                   # If this is just TXT
+        output = format(data.read)            # Just format it
       end
-      output
+      output                                  # And don't forget to return it
     end
 
     # METHOD: write_to_file(text)
-    # write formatted text back to file
+    # Write text to file
     def write_to_file(data)
       if @type == ".csv"
         CSV.open(@target, "w", :encoding => "UTF-8", :headers => true) do |csv|
@@ -94,7 +90,7 @@ module LeesToolbox
             csv << [row]
           end
         end
-      else
+      elsif @type == ".txt"
         File.open(@target, "w", :encoding => "UTF-8") do |file|
           file << data
         end
@@ -105,8 +101,7 @@ module LeesToolbox
     # Divide text into sections and then filter
     def format(text)
       output = "<ECI>\n<div><font face='verdana'>\n"
-      # Divide into hash of sections and
-      # Format each section
+      # Divide into hash of sections and format each section
       sections = sectionize(text).to_a.map! { |section| filter(section) }
 
       # Wrap each section with a div and give it to output
@@ -123,19 +118,15 @@ module LeesToolbox
     # METHOD: filter(section)
     # Format section into HTML
     def filter(section)
-      # section should be a paired array
+      # Find if there's a formatting rule for section
       section[0] = section[0].split("#")
       head = section[0][0]
       rule = section[0][1]
-
       if head == "product_name"
-        # product_name has but one format
-        body = form_of_title(section[1])
+        body = form_of_title(section[1])        # product_name has but one format
       elsif head == "description"
-        # description is always a graf
-        body = form_of_graf(section[1])
-      else
-        # everything else is a list unless otherwise stated
+        body = form_of_graf(section[1])         # And description is always a graf
+      else                                      # everything else is a list unless otherwise stated
         case rule
           when "graf"
             body = form_of_graf(section[1])
@@ -147,13 +138,14 @@ module LeesToolbox
             body = form_of_list(section[1])
         end
       end
-      [ head, body ]
+      [ head, body ]                            # Return a binary array
     end
     
     # METHOD: form_of_graf(text)
-    # Formats text block as a paragraph
+    # Format text as a paragraph
     def form_of_graf(text)
-      text = sanitize(text)
+      text = sanitize(text)                     # Clean up the text
+      # If it's more than one graf, put it together with <p>s
       output = text.split("\n")
       output.map! do |line|
         line.strip!
@@ -164,12 +156,12 @@ module LeesToolbox
     end
 
     # METHOD: form_of_table(text)
-    # Formats block of text as a table
+    # Format text as a table
     def form_of_table(text)
       text.gsub!(/\r\n/,"\n")                       # Clean up newlines
-      # Figure out what seperator is
-      commas = text.scan(",").length
-      tabs = text.scan("\t").length
+      # Figure out what the seperator is
+      commas = text.scan(",").length                # How many commas?
+      tabs = text.scan("\t").length                 # How many tabs?
       commas > tabs ? sep="," : text.gsub!("\t","|"); sep="|"   # Whichever is more is the seperator
       text.strip!                                   # Now take out white space
       table = text.split("\n").map! { |row| row.split(sep) }    # Divide text into array of arrays
@@ -207,38 +199,61 @@ module LeesToolbox
     # Formats block of text as a list
     def form_of_list(text)
       output = "<ul>\n"
-      listdepth = 1
-      text.gsub!(/[:]+[ \n\t]*/,": ")      # If colons, remove extra spaces and linebreaks
+      listdepth = 1                         # Counter for sublists
+      text.gsub!(/[:]+[ \n\t]*/,": ")       # If colons, remove extra spaces and linebreaks
       text = text.split("\n")
       # Wrap each line in <li>s
       text.each do |line|
         if line.length < 2 then next end        # Skip empty line
         line.strip!
-        # If line starts with *, sublist
-        if line[0] == "*"
-          line = sanitize(line)
+        if line[0] == "*"                       # If line starts with *, start sublist
+          line = sanitize(line)                 # Clean up the text
           line.sub!("*","\t\t<li style=\"list-style:none\"><strong>")
           output << "#{line}</strong>\n"
           output << "\t\t\t<ul>\n"
-          listdepth += 1
-        # If line starts with -, continue sublist
-        elsif line[0] == "-"
-          line = sanitize(line)
+          listdepth += 1                        # Bump listdepth
+        elsif line[0] == "-"                    # If line starts with -, continue sublist
+          line = sanitize(line)                 # Clean up the text
           line.sub!("-","\t\t\t\t<li>")
           output << "#{line}</li>\n"
-        else
-          if listdepth > 1
-            listdepth -= 1
+        else                                    # Otherwise, it's not a sublist
+          if listdepth > 1                      # Finish sublist if we need to
+            listdepth -= 1                      # Decrement listdepth
             output << "\t\t\t</ul>\n\t\t</li>\n"
           end
           output << "\t\t<li>#{sanitize(line)}</li>\n"
         end
       end
-      # If we get to end and haven't closed sublist, close it
-      if listdepth > 1
+      if listdepth > 1                          # If we get to end and haven't closed sublist, do it
         output << "\t\t\t</ul>\n\t\t</li>\n"
       end
-      output << "\t</ul>\n"
+      output << "\t</ul>\n"                     # And wrap the whole thing up
+    end
+
+    # METHOD: form_of_title(text)
+    # Format text in title case
+    def form_of_title(text)
+      no_cap = ["a","an","the","with","and","but","or","on","in","at","to"]  # Words we don't cap
+      title = text.split                                  # Take white space off ends
+      title.map! do |word|                                # Cycle through words
+        if word != title[0]                               # Skip: first word is Vendor name
+          if word[0] == "*"                               # Skip: word with asterisk (*)
+            thisword = word.sub!("*","")
+          elsif word[0] =~ /[\.\d]/                       # Skip: digits
+            thisword = word
+          elsif word.include?('-') && word.length > 1     # Capitalize both sides of hyphens (-)
+            thisword = word.split('-').each{|i| i.capitalize!}.join('-')
+          elsif no_cap.include?(word.downcase)            # Lowercase 
+            thisword = word.downcase
+          else
+            thisword = word.downcase.capitalize           # Capitalize everything else
+          end
+        else
+          thisword = word
+        end
+        sanitize(thisword)                                # Clean up the text
+      end
+      "<h2>#{title.join(' ')}<\h2>"                       # Wrap with <h2>s
     end
 
     # METHOD: get_descriptions(data)
@@ -246,22 +261,21 @@ module LeesToolbox
     def get_descriptions(data)
       # Get just the descriptions column
       # If :desc is present, that's it
-      data = data.read
-      headers = data.headers
-      if headers.include?("desc")
-        descriptions = data["desc"]
-      else
-        # Otherwise, ask which column to use
+      data = data.read                                    # Read data from CSV
+      headers = data.headers                              # Get headers
+      if headers.include?("desc")                         # If there's a column called "desc"
+        descriptions = data["desc"]                       # That's the data we want
+      else                                                # Otherwise ...
         header = ""
-        while !headers.include?(header)
+        while !headers.include?(header)                   # We need to ask which column to use
           puts "Which column has product descriptions?"
-          headers.each { |h| puts "\t#{h}" }
-          print "#: "
+          headers.each { |h| puts "\t#{h}" }              # List column heads
+          print "#: "                                     # Make user choose column
           header = gets.chomp
-          descriptions = data[header]
+          descriptions = data[header]                     # Select that column
         end
       end
-      descriptions
+      descriptions                                        # Don't forget to return data
     end
 
     # METHOD: sectionize(text)
@@ -278,61 +292,21 @@ module LeesToolbox
       sections
     end
 
-    # METHOD: form_of_title(text)
-    # Format text in title case
-    def form_of_title(text)
-      # Words we don't cap
-      no_cap = ["a","an","the","with","and","but","or","on","in","at","to"]
-      # Cycle through words
-      title = text.split
-      title.map! do |word|
-        # First word is Vendor name - don't mess with it
-        if word != title[0]
-          # If asterisked or starts with a period, leave it alone
-          if word[0] == "*"
-            thisword = word.sub!("*","")
-          # If it is a number leave it alone
-          elsif word[0] =~ /[\.\d]/
-            thisword = word
-          # If there's a dash and the word's longer than 1 char
-          elsif word.include?('-') && word.length > 1
-            # Split at - and cap both sides
-            thisword = word.split('-').each{|i| i.capitalize!}.join('-')
-          # If in no_cap list, don't cap it
-          elsif no_cap.include?(word.downcase)
-            thisword = word.downcase
-          # Otherwise, cap it
-          else
-            thisword = word.downcase.capitalize
-          end
-        else
-          thisword = word
-        end
-        sanitize(thisword)
-      end
-      "<h2>#{title.join(' ')}<\h2>"
-    end
-
     # METHOD: sanitize(input)
     # Replaces special characters with HTML
     def sanitize(input)
-      # Convert special characters to HTML
       encoder = HTMLEntities.new(:html4)
-      output = encoder.encode(input, :named)
-      # Go back through and put some characters back
-      SPECIAL_CHARS.each do |k,v|
+      output = encoder.encode(input, :named)              # Convert special characters to HTML
+      SPECIAL_CHARS.each do |k,v|                         # Go through and put some characters back
         output.gsub!(k,v)
       end
-      # Get rid of double returns
-      while output.include?("\n\n")
+      while output.include?("\n\n")                       # Get rid of double returns
         output.gsub!("\n\n","\n")
       end
-      # get rid of double spaces
-      while output.include?("  ")
+      while output.include?("  ")                         # get rid of double spaces
         output.gsub!("  "," ")
       end
-      # Strip off white space on either side
-      output.strip
+      output.strip                                        # Strip white space off sides
     end
   end
 end
