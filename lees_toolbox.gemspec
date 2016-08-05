@@ -20,9 +20,11 @@ Gem::Specification.new do |gem|
 
 	gem.files			= Dir["{lib}/**/*.rb", "bin/*", "test/*"]
 
-	gem.add_dependency("thor", "~> 0.18.1")
-	gem.add_dependency("pry", ">= 0.9.12.6")
-	gem.add_dependency("rmagick", "~> 2.15.4")
+	gem.add_dependency("thor", "~> 0.18")
+	gem.add_dependency("pry", ">= 0.9.12")
+	gem.add_dependency("htmlentities", "~> 4.3")
+	gem.add_dependency("rchardet", "~> 1.6")
+	gem.add_dependency("rmagick", "~> 2.15")
 
 	dev_dependencies = [['mocha', '>= 0.9.8'],
 					  ['fakeweb'],
