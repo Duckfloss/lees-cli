@@ -2,6 +2,7 @@ require 'csv'
 require 'yaml'
 require 'rchardet'
 require 'htmlentities'
+require 'pry'
 
 module LeesToolbox
 
@@ -43,7 +44,7 @@ module LeesToolbox
       @file = params[:source]
       path = File.dirname(params[:source])
       filename = File.basename(params[:source],@type)
-      @target = "#{path}/#{filename}-FILTERED#{@type}"
+      @target = "#{path}/#{filename}-FORMATTED#{@type}"
     end
 
     def translate
@@ -53,7 +54,6 @@ module LeesToolbox
       else
         encoding = "UTF-8:UTF-8"
       end
-
       # Open file
       if @type == ".csv"
         nospaces = Proc.new{ |head| head.gsub(" ","_") }    # Special header filter
@@ -66,6 +66,7 @@ module LeesToolbox
 
     private
 
+    ##
     # METHOD: parse(data)
     # 
     def parse(data)
@@ -73,7 +74,11 @@ module LeesToolbox
         descriptions = get_descriptions(data) # We're gonna split it into rows
         output = ["Desc"]
         descriptions.each do |row|
-          output << format(row)               # And format each line
+          if row.nil?
+            output << ""                      # Don't do blanks
+          else
+            output << format(row)             # Format each line
+          end
         end
       elsif @type == ".txt"                   # If this is just TXT
         output = format(data.read)            # Just format it
@@ -81,6 +86,7 @@ module LeesToolbox
       output                                  # And don't forget to return it
     end
 
+    ##
     # METHOD: write_to_file(text)
     # Write text to file
     def write_to_file(data)
@@ -97,13 +103,13 @@ module LeesToolbox
       end
     end
 
+    ##
     # METHOD: format
     # Divide text into sections and then filter
     def format(text)
       output = "<ECI>\n<div><font face='verdana'>\n"
       # Divide into hash of sections and format each section
       sections = sectionize(text).to_a.map! { |section| filter(section) }
-
       # Wrap each section with a div and give it to output
       sections.each do |section|
         header = section[0]=="product_name" ? "" : "\t<u>#{section[0].capitalize!}</u>\n"
@@ -115,6 +121,7 @@ module LeesToolbox
       output << "</font></div>"
     end
 
+    ##
     # METHOD: filter(section)
     # Format section into HTML
     def filter(section)
@@ -141,6 +148,7 @@ module LeesToolbox
       [ head, body ]                            # Return a binary array
     end
     
+    ##
     # METHOD: form_of_graf(text)
     # Format text as a paragraph
     def form_of_graf(text)
@@ -155,6 +163,7 @@ module LeesToolbox
       output.join("\n")
     end
 
+    ##
     # METHOD: form_of_table(text)
     # Format text as a table
     def form_of_table(text)
@@ -195,6 +204,7 @@ module LeesToolbox
       output << "</table>\n"                        # And close table
     end
 
+    ##
     # METHOD: form_of_list(text)
     # Formats block of text as a list
     def form_of_list(text)
@@ -230,6 +240,7 @@ module LeesToolbox
       output << "\t</ul>\n"                     # And wrap the whole thing up
     end
 
+    ##
     # METHOD: form_of_title(text)
     # Format text in title case
     def form_of_title(text)
@@ -256,6 +267,7 @@ module LeesToolbox
       "<h2>#{title.join(' ')}<\h2>"                       # Wrap with <h2>s
     end
 
+    ##
     # METHOD: get_descriptions(data)
     # Returns array of descriptions
     def get_descriptions(data)
@@ -271,16 +283,17 @@ module LeesToolbox
           puts "Which column has product descriptions?"
           headers.each { |h| puts "\t#{h}" }              # List column heads
           print "#: "                                     # Make user choose column
-          header = gets.chomp
+          header = STDIN.gets.chomp
           descriptions = data[header]                     # Select that column
         end
       end
       descriptions                                        # Don't forget to return data
     end
 
+    ##
     # METHOD: sectionize(text)
     # Divide MD-formatted text into sections
-    # Returns binary array
+    # Returns paired array
     def sectionize(text)
       sections = {}
       splits = text.split("{")
@@ -292,6 +305,7 @@ module LeesToolbox
       sections
     end
 
+    ##
     # METHOD: sanitize(input)
     # Replaces special characters with HTML
     def sanitize(input)
