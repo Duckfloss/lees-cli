@@ -264,7 +264,7 @@ module LeesToolbox
         end
         sanitize(thisword)                                # Clean up the text
       end
-      "<h2>#{title.join(' ')}<\h2>"                       # Wrap with <h2>s
+      "<h2> #{title.join(' ')} <\\h2>"                       # Wrap with <h2>s
     end
 
     ##
