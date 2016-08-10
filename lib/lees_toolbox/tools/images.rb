@@ -1,6 +1,5 @@
 require 'RMagick'
 
-
 module LeesToolbox
 
   def self.run(params)
@@ -34,7 +33,7 @@ module LeesToolbox
     end
 
     ##
-    # METHOD: 
+    # METHOD: chop
     def chop
       puts "Chopping up #{@total} images."                    # Message STDOUT
       if @eci then $log.info "Outputting images to ECI" end   # Log if we're doing ECI
@@ -48,7 +47,8 @@ module LeesToolbox
     private
 
     ##
-    # METHOD: Chop up image into selected formats
+    # METHOD: chopup(image)
+    # Chop up image into selected formats
     def chopup(image)
       $log.info "Parsing #{image}"                  # Begin reporting
       outputs = []                                  # For listing each format
@@ -70,12 +70,12 @@ module LeesToolbox
         self.background_color = "#ffffff"           # Default: White background
         self.gravity = CenterGravity                # Default: Center image
       end
-      preformat_image!(imageout)                    # Do preformatting on image
+      imageout = preformat_image(imageout)          # Do preformatting on image
       outputs.each do |output|                      # For each format
         imageout.resize!(output[:size],output[:size])               # Size it
         write_file(imageout, "#{output[:dest]}/#{output[:name]}")   # And save it
         if output[:size] == 1050 && !@parsed.include?(filebase)     # Save default large copy
-          write_file(imageout, "#{output[:dest]}/#{filebase}_lg.jpg")
+         write_file(imageout, "#{output[:dest]}/#{filebase}_lg.jpg")
         end
         # And log it
         if output[:dest] == "R:/RETAIL/RPRO/Images/Inven"
@@ -94,30 +94,30 @@ module LeesToolbox
     end
 
     ##
-    # METHOD: Preformats image
+    # METHOD: preformat_image(image)
     # Makes it square, clears out alpha channel, etc.
-    def preformat_image!(image)
-      @image = image
+    def preformat_image(image)
+      image.density = "72x72"             # Make 72x72
       # Convert to our default color profile (RGB, ftw!)
-      if @image.colorspace == Magick::CMYKColorspace
-        @image = @image.add_profile(COLOR_PROFILE)
+      if image.colorspace == Magick::CMYKColorspace
+        image = image.add_profile(COLOR_PROFILE)
       end
       # If the image has alpha channel transparency, fill it with background color
-      if @image.alpha?
-        @image.alpha(BackgroundAlphaChannel)
+      if image.alpha?
+        image.alpha(BackgroundAlphaChannel)
       end
       # If the image size isn't a square, make it a square
-      img_w = @image.columns
-      img_h = @image.rows
+      img_w = image.columns
+      img_h = image.rows
       ratio = img_w.to_f/img_h.to_f
       if ratio < 1
         x = img_h/2-img_w/2
-        @image = @image.extent(img_h,img_h,x=-x,y=0)
+        image = image.extent(img_h,img_h,x=-x,y=0)
       elsif ratio > 1
         y = img_w/2-img_h/2
-        @image = @image.extent(img_w,img_w,x=0,y=-y)
+        image = image.extent(img_w,img_w,x=0,y=-y)
       end
-      return self
+      return image
     end
 
     ##
@@ -142,8 +142,7 @@ module LeesToolbox
     # METHOD: Writes new files to destination
     def write_file(image,dest)
       image.write(dest) do
-        self.quality = 80
-        self.density = "72x72"
+        self.quality = 80                  # Make medium quality
       end
     end
   end

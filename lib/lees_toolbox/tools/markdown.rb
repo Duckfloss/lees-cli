@@ -2,7 +2,6 @@ require 'csv'
 require 'yaml'
 require 'rchardet'
 require 'htmlentities'
-require 'pry'
 
 module LeesToolbox
 
