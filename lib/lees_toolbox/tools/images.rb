@@ -126,9 +126,11 @@ module LeesToolbox
       if File.directory?(source)
         images = Dir.entries(source)
         images.keep_if { |file| file =~ /\.jpg$|\.png$|\.jpeg$|\.gif$/ }
+#binding.pry
       elsif File.file?(source)
         if [".jpg", ".png", ".jpeg", ".gif"].include?(File.extname(source))
-          images = [ source ]
+          images = [ File.basename(source) ]
+          @source = File.dirname(source)
         else
           raise "#{source} is not a valid image file." #error
         end
