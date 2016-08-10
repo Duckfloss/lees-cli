@@ -125,10 +125,10 @@ module LeesToolbox
     def piclist(source)
       if File.directory?(source)
         images = Dir.entries(source)
-        images.keep_if { |file| file =~ /\.jpg$|\.png$|\.jpeg$|\.gif$/ }
-#binding.pry
+        images.keep_if { |file| file.downcase =~ /\.jpg$|\.png$|\.jpeg$|\.gif$/ }
+binding.pry
       elsif File.file?(source)
-        if [".jpg", ".png", ".jpeg", ".gif"].include?(File.extname(source))
+        if [".jpg", ".png", ".jpeg", ".gif"].include?(File.extname(source).downcase)
           images = [ File.basename(source) ]
           @source = File.dirname(source)
         else
