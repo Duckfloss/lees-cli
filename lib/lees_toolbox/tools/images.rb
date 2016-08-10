@@ -33,106 +33,79 @@ module LeesToolbox
       @parsed = []
     end
 
+    ##
+    # METHOD: 
     def chop
-      puts "Chopping up #{@total} images."
-
-      @images.each do |image|
-        if @eci
-          $log.info "Outputting images to ECI"
-        end
-
-        chopup(image)
-
-        # Log what's left
-        @total -= 1
-        $log.info "#{@total} images left to parse"
+      puts "Chopping up #{@total} images."                    # Message STDOUT
+      if @eci then $log.info "Outputting images to ECI" end   # Log if we're doing ECI
+      @images.each do |image|                                 # For each image
+        chopup(image)                                         # Chopitup
+        @total -= 1                                           # Decrement total
+        $log.info "#{@total} images left to parse"            # Log what's left
       end
     end
 
     private
 
+    ##
     # METHOD: Chop up image into selected formats
     def chopup(image)
-      # Begin reporting
-      $log.info "Parsing #{image}"
-
-      outputs = []
-
-      # Parse filename
-      filebase = image.slice(/^[A-Z]{16}/)
-      fileattr = image.slice(/(?<=\_)([A-Za-z0-9\_]+)(?=\.)/)
-
-      # Check if parsing to ECI
-      if @eci
-        # If we haven't already done it, output to ECI
-        if !@parsed.include?(filebase)
+      $log.info "Parsing #{image}"                  # Begin reporting
+      outputs = []                                  # For listing each format
+      filebase = image.slice(/^[A-Z]{16}/)          # Get product SID
+      fileattr = image.slice(/(?<=\_)([A-Za-z0-9\_]+)(?=\.)/)     # Get product attribute
+      if @eci                                       # Check if we're parsing to ECI
+        if !@parsed.include?(filebase)              # Check if we've already done this image
           outputs << { size: 350, dest: ECI_PATH, name: "#{filebase}.jpg" }
           outputs << { size: 100, dest: ECI_PATH, name: "#{filebase}t.jpg" }
         end
       end
-
-      # Collect other formats
-      @formats.each do |format|
+      @formats.each do |format|                     # Collect other formats into output array
         outputs << { size: SIZE[format], dest: @dest, name: "#{File.basename(image,".*")}_#{TAG[format]}.jpg" }
       end
-
-      # Sort the $outputs array by size
-      outputs.sort! { |x,y| x[:size] <=> y[:size] }
-      outputs.reverse!
-
+      outputs.sort! { |x,y| x[:size] <=> y[:size] } # Sort outputs by size
+      outputs.reverse!                              # And reverse (from large to small)
       # Create new image object and set defaults
       imageout = ImageList.new("#{@source}/#{image}") do
-        self.background_color = "#ffffff"
-        self.gravity = CenterGravity
+        self.background_color = "#ffffff"           # Default: White background
+        self.gravity = CenterGravity                # Default: Center image
       end
-
-      preformat_image!(imageout)
-
-      # Chop up image
-      outputs.each do |output|
-        # Resize image
-        imageout.resize!(output[:size],output[:size])
-
-        # Save resized image
-        write_file(imageout, "#{output[:dest]}/#{output[:name]}")
-
-        # If we need it, save a bare large image
-        if output[:size] == 1050 && !@parsed.include?(filebase)
-          write_file(imageout, "#{output[:dest]}/#{filebase}.jpg")
+      preformat_image!(imageout)                    # Do preformatting on image
+      outputs.each do |output|                      # For each format
+        imageout.resize!(output[:size],output[:size])               # Size it
+        write_file(imageout, "#{output[:dest]}/#{output[:name]}")   # And save it
+        if output[:size] == 1050 && !@parsed.include?(filebase)     # Save default large copy
+          write_file(imageout, "#{output[:dest]}/#{filebase}_lg.jpg")
         end
-
+        # And log it
         if output[:dest] == "R:/RETAIL/RPRO/Images/Inven"
           $log.info "Saved to ECI: #{output[:name]}"
         else
           $log.info "Saved to dest: #{output[:name]}"
         end
-        
       end
-
-      # We only need to parse to ECI and large bare files once
+      # We only need to parse to ECI and default large files once
       # So add name to parsed file list
       if !@parsed.include?(filebase)
         @parsed << filebase
       end
-
-      # Kill this whole endealment and clean out garbage
-      imageout.destroy!
-      GC.start
+      imageout.destroy!      # To clear memory, ditch this file
+      GC.start               # And take out the trash
     end
 
-    # METHOD: Preformats image in advance of chopping it up
+    ##
+    # METHOD: Preformats image
+    # Makes it square, clears out alpha channel, etc.
     def preformat_image!(image)
       @image = image
-      # If the image is CMYK, change it to RGB
+      # Convert to our default color profile (RGB, ftw!)
       if @image.colorspace == Magick::CMYKColorspace
         @image = @image.add_profile(COLOR_PROFILE)
       end
-
       # If the image has alpha channel transparency, fill it with background color
       if @image.alpha?
         @image.alpha(BackgroundAlphaChannel)
       end
-
       # If the image size isn't a square, make it a square
       img_w = @image.columns
       img_h = @image.rows
@@ -144,10 +117,10 @@ module LeesToolbox
         y = img_w/2-img_h/2
         @image = @image.extent(img_w,img_w,x=0,y=-y)
       end
-
       return self
     end
 
+    ##
     # METHOD: Returns list of valid image files
     def piclist(source)
       if File.directory?(source)
@@ -165,6 +138,7 @@ module LeesToolbox
       images
     end
 
+    ##
     # METHOD: Writes new files to destination
     def write_file(image,dest)
       image.write(dest) do
@@ -172,6 +146,5 @@ module LeesToolbox
         self.density = "72x72"
       end
     end
-
   end
 end
