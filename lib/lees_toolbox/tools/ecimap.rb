@@ -36,7 +36,7 @@ module LeesToolbox
       # Make an array of unique "attr"s from @csv
       attrs = []
       @csv.each do |row|
-        attrs << row[0]
+        attrs << row[:attr]
       end
       attrs.uniq!
 
@@ -74,10 +74,20 @@ module LeesToolbox
 
     # METHOD: Send translations from local file to ECI
     def out_it
+      # Get :attr index
+      attr = @csv.headers.index(:attr)
+      # Get color column selector
+      if @csv.headers.include?(:colors)     # Try :colors
+        selector = @csv.headers.index(:colors)
+      elsif @csv.headers.include?(:color)   # Try :color
+        selector = @csv.headers.index(:color)
+      else                                  # Else grab column after :attr
+        selector = attr+1
+      end
       # Make a dictionary from CSV
       dictionary = {}
       @csv.to_a.uniq.drop(1).each do |row|
-        dictionary["ATTR<_as_>#{row[0]}"] = row[1]
+        dictionary["ATTR<_as_>#{row[attr]}"] = row[selector]
       end
 
       # Merge dictionary into ECI
