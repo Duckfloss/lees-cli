@@ -48,7 +48,7 @@ module LeesToolbox
 
     def translate
      # Detect file encoding
-      if CharDet.detect(File.read(@file))["encoding"] != "UTF-8"
+      if CharDet.detect(File.read(@file))["encoding"].upcase != "UTF-8"
         encoding = "Windows-1252:UTF-8"
       else
         encoding = "UTF-8:UTF-8"
