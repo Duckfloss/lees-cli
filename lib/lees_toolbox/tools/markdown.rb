@@ -170,7 +170,7 @@ module LeesToolbox
       # Figure out what the seperator is
       commas = text.scan(",").length                # How many commas?
       tabs = text.scan("\t").length                 # How many tabs?
-      commas > tabs ? sep="," : text.gsub!("\t","|"); sep="|"   # Whichever is more is the seperator
+      commas > tabs ? sep="," : sep="\t"            # Whichever is more is the seperator
       text.strip!                                   # Now take out white space
       table = text.split("\n").map! { |row| row.split(sep) }    # Divide text into array of arrays
       rows = table.length                           # Count rows and columns
