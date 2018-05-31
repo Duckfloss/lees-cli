@@ -11,7 +11,7 @@ module LeesToolbox
 
   class Eci_Map
 
-    ECI_PATH = "R:/RETAIL/RPRO/EC"
+    ECI_PATH = "R:/Retail/Rpro/EC"
     ECILinkINI = "ECLink.INI"
 
     def initialize(params)

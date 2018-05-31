@@ -26,7 +26,7 @@ module LeesToolbox
            :desc=>"Convert to eci image directory"
     option :source, :aliases=>"-s", :type=>:string,
            :desc=>"Source image or directory",
-           :default=>"C:/Documents and Settings/pos/My Documents/Downloads/WebAssets"
+           :default=>"C:/Users/Lees/Downloads/WebAssets"
     option :dest, :aliases=>"-d", :type=>:string,
            :desc=>"Directory to output images to",
            :default=>"R:/RETAIL/IMAGES/4Web"
